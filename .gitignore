@@ -1,2 +1,10 @@
-# Python
+# Python virtual environment
 p3-env/
+
+# C examples
+libopencm3/
+
+# C examples utilities
+stlink/
+gcc-arm-none-eabi-10.3-2021.10/
+gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2

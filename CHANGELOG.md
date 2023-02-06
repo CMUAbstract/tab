@@ -17,6 +17,7 @@ bottom of the file for a change log entry template.
   commands to the documentation file
 * C implementation files
 * A directory for a CDH board "monolithic" TAB example
+* Adds utilities and scripts supporting C examples
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
