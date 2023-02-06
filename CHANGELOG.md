@@ -12,7 +12,9 @@ bottom of the file for a change log entry template.
 
 ## <a name="unreleased"></a> Unreleased
 
-* No unreleased changes have been recorded
+### Added
+* Descriptions of the Common Ack, Common Nack, Common Debug, and Common Data
+  commands to the documentation file
 
 ## <a name="0.0.0"></a> 0.0.0
 

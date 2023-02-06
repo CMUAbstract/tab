@@ -5,12 +5,99 @@ If you are interested in using and understanding TAB, refer to this document.
 ## Overview
 
 * [Commands](#commands): TAB commands
+  * [Common Ack](#common-ack)
+  * [Common Nack](#common-nack)
+  * [Common Debug](#common-debug)
+  * [Common Data](#common-data)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
 ## <a name="commands"></a> Commands
 
-TODO
+TAB consists of a small number of commands. These commands are documentated in
+the following subsections.
+
+### <a name="common-ack"></a> Common Ack
+
+This acknowledgement command is most often used as a reply indicating success.
+It is also useful as a command to check whether the recipient is "alive."
+* Name: `common_ack`
+* Required parameters: None
+* Optional parameters: None
+* Reply: `common_ack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x10   |
+
+**Payload**
+
+No payload
+
+### <a name="common-nack"></a> Common Nack
+
+This negative-acknowledgement command is used as a reply indicating failure.
+* Name: `common_nack`
+* Required parameters: None
+* Optional parameters: None
+* Reply: `common_nack`
+  * Because this command is used as a reply, sending this command generates a
+    common nack reply.
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0xff   |
+
+**Payload**
+
+No payload
+
+### <a name="common-debug"></a> Common Debug
+
+This command supports a variable-length ASCII payload useful for debugging.
+* Name: `common_debug`
+* Required parameters: A sequence of one or more ASCII characters (not null
+  terminated)
+* Optional parameters: None
+* Reply: `common_debug` with the original payload of ASCII characters
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| 0x22         | 0x69         | 0xHH            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x11   |
+
+* Remaining Bytes must be greater than or equal to 0x07
+
+**Payload**
+
+| ASCII character(s) |
+| 0xHH               |
+
+* Up to 249 ASCII characters (not null terminated)
+
+### <a name="common-data"></a> Common Data
+
+This command supports a variable-length byte payload useful for data transfer.
+* Name: `common_data`
+* Required parameters: A sequence of one or more bytes
+* Optional parameters: None
+* Reply: `common_ack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| 0x22         | 0x69         | 0xHH            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x16   |
+
+* Remaining Bytes must be greater than or equal to 0x07
+
+**Payload**
+
+| Byte(s) |
+| 0xHH    |
+
+* Up to 249 bytes
 
 ## <a name="protocol"></a> Protocol
 
