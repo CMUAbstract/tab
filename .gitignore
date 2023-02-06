@@ -1,6 +1,9 @@
 # Python virtual environment
 p3-env/
 
+# Python cache
+__pycache__
+
 # C examples
 libopencm3/
 

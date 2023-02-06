@@ -64,6 +64,13 @@ typedef enum rx_cmd_buff_state {
   RX_CMD_BUFF_STATE_COMPLETE     = ((uint8_t)0x0a)
 } rx_cmd_buff_state_t;
 
+//// Common Data buffer
+typedef struct common_data_buff {
+  size_t       end_index;         // data[i] valid for i<end_index
+  const size_t size;              // common_data_t b={.size=PLD_MAX_LEN};
+  uint8_t      data[PLD_MAX_LEN]; // Payload bytes
+} common_data_t;
+
 //// RX command buffer
 typedef struct rx_cmd_buff {
   rx_cmd_buff_state_t state;             // See enum rx_cmd_buff_state
@@ -81,13 +88,6 @@ typedef struct tx_cmd_buff {
   const size_t size;              // tx_cmd_buff_t b={.size=CMD_MAX_LEN};
   uint8_t      data[CMD_MAX_LEN]; // Command bytes
 } tx_cmd_buff_t;
-
-//// Common Data buffer
-typedef struct common_data_buff {
-  size_t       end_index;         // data[i] valid for i<end_index
-  const size_t size;              // common_data_t b={.size=PLD_MAX_LEN};
-  uint8_t      data[PLD_MAX_LEN]; // Payload bytes
-} common_data_t;
 
 // Helper functions
 
