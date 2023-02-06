@@ -154,9 +154,9 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
       case COMMON_DATA_OPCODE:
         // handle common_data
         for(i=PLD_START_INDEX; i<rx_cmd_buff_o->end_index; i++) {
-          common_data_buff->data[i-PLD_START_INDEX] = rx_cmd_buff_o->data[i];
+          common_data_buff.data[i-PLD_START_INDEX] = rx_cmd_buff_o->data[i];
         }
-        common_data_buff->end_index = rx_cmd_buff_o->end_index-PLD_START_INDEX;
+        common_data_buff.end_index = rx_cmd_buff_o->end_index-PLD_START_INDEX;
         success = handle_common_data(common_data_buff);
         // reply
         if(success) {

@@ -43,24 +43,99 @@ except:
 ################################################################################
 
 # Set up test support variables
+HWID = 0x1234
 msgid = 0x0000
 rx_cmd_buff = RxCmdBuff()
 
-# 1. Basic test
-for i in range(0,5):
-  cmd = TxCmd(COMMON_ACK_OPCODE, HWID, msgid, SRC, DST)
-  byte_i = 0
-  while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
-    if byte_i < cmd.get_byte_count():
-      serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
-      byte_i += 1
-    if serial_port.in_waiting>0:
-      bytes = serial_port.read(1)
-      for b in bytes:
-        rx_cmd_buff.append_byte(b)
-  print('txcmd: '+str(cmd))
-  print('reply: '+str(rx_cmd_buff)+'\n')
-  cmd.clear()
-  rx_cmd_buff.clear()
-  msgid += 1
-  time.sleep(1.0)
+# 1. Test Common Ack
+cmd = TxCmd(COMMON_ACK_OPCODE, HWID, msgid, GND, CDH)
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
+
+# 2. Test Common Nack
+cmd = TxCmd(COMMON_NACK_OPCODE, HWID, msgid, GND, CDH)
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
+
+# 3. Test Common Debug
+cmd = TxCmd(COMMON_DEBUG_OPCODE, HWID, msgid, GND, CDH)
+cmd.common_debug('Hello, world!')
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
+
+# 4. Test Common Data with expected reply of Common Ack
+cmd = TxCmd(COMMON_DATA_OPCODE, HWID, msgid, GND, CDH)
+cmd.common_data([0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0a,0x0b])
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
+
+# 5. Test Common Data with expected reply of Common Nack
+cmd = TxCmd(COMMON_DATA_OPCODE, HWID, msgid, GND, CDH)
+cmd.common_data([0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x0a,0x09,0x0b])
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)

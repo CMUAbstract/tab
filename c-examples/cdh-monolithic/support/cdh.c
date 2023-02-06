@@ -21,15 +21,29 @@
 // TAB header
 #include <tab.h>                    // TAOLST protocol macros, typedefs, fnctns
 
-// Initialization functions
+// Functions required by TAB
+
+int handle_common_data(common_data_t common_data_buff_i) {
+  int strictly_increasing = 1;
+  uint8_t prev_byte = common_data_buff_i.data[0];
+  for(size_t i=1; i<common_data_buff_i.end_index; i++) {
+    if(prev_byte>=common_data_buff_i.data[i]) {
+      strictly_increasing = 0;
+      i = common_data_buff_i.end_index;
+    }
+  }
+  return strictly_increasing;
+}
+
+// Board initialization functions
 
 void init_clock(void) {
   rcc_osc_on(RCC_HSI16);                    // 16 MHz internal RC oscillator
   rcc_wait_for_osc_ready(RCC_HSI16);        // Wait until oscillator is ready
   rcc_set_sysclk_source(RCC_CFGR_SW_HSI16); // Sets sysclk source for RTOS
   rcc_set_hpre(RCC_CFGR_HPRE_NODIV);        // AHB at 80 MHz (80 MHz max.)
-  rcc_set_ppre1(RCC_CFGR_PPRE1_DIV2);       // APB1 at 40 MHz (80 MHz max.)
-  rcc_set_ppre2(RCC_CFGR_PPRE2_NODIV);      // APB2 at 80 MHz (80 MHz max.)
+  rcc_set_ppre1(RCC_CFGR_PPRE_DIV2);        // APB1 at 40 MHz (80 MHz max.)
+  rcc_set_ppre2(RCC_CFGR_PPRE_NODIV);       // APB2 at 80 MHz (80 MHz max.)
   //flash_prefetch_enable();                  // Enable instr prefetch buffer
   flash_set_ws(FLASH_ACR_LATENCY_4WS);      // RM0351: 4 WS for 80 MHz
   //flash_dcache_enable();                    // Enable data cache
@@ -67,7 +81,7 @@ void init_uart(void) {
   usart_enable(USART1);
 }
 
-// Task-like functions
+// Feature functions
 
 void rx_usart1(rx_cmd_buff_t* rx_cmd_buff_o) {
   while(                                             // while

@@ -23,6 +23,7 @@ bottom of the file for a change log entry template.
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
+* Fixes initial commits of monolithic CDH C example and Python TX example
 
 ## <a name="0.0.0"></a> 0.0.0
 

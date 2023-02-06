@@ -141,6 +141,12 @@ class RxCmdBuff:
     elif self.state == RxCmdBuffState.COMPLETE:
       pass
 
+  def __str__(self):
+    if self.state == RxCmdBuffState.COMPLETE:
+      return cmd_bytes_to_str(self.data)
+    else:
+      pass
+
 ## TX command buffer
 class TxCmdBuff:
   def __init__(self):
@@ -233,7 +239,7 @@ def cmd_bytes_to_str(data):
   elif data[OPCODE_INDEX] == COMMON_DATA_OPCODE:
     cmd_str += 'common_data'
     for i in range(0,data[MSG_LEN_INDEX]-0x06):
-      pld_str += ' 0x{:04x}'.format(data[PLD_START_INDEX+i])
+      pld_str += ' 0x{:02x}'.format(data[PLD_START_INDEX+i])
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -287,7 +293,7 @@ class TxCmd:
       if len(bytes)<=PLD_MAX_LEN:
         self.data[MSG_LEN_INDEX] = 0x06+len(bytes)
         for i in range(0,len(bytes)):
-          self.data[PLD_START_INDEX+i] = ord(bytes[i])
+          self.data[PLD_START_INDEX+i] = bytes[i]
 
   def get_byte_count(self):
     return self.data[MSG_LEN_INDEX]+0x03
