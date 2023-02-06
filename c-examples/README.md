@@ -4,6 +4,8 @@ TAB examples using the C implementation
 
 ## Directory Contents
 
+* [cdh-monolithic](cdh-monolithic/README.md): A simple example program for the
+  CDH board
 * [README.md](README.md): This document
 
 ## License

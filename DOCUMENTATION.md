@@ -29,6 +29,7 @@ It is also useful as a command to check whether the recipient is "alive."
 **Header**
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
 | 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x10   |
 
 **Payload**
@@ -48,6 +49,7 @@ This negative-acknowledgement command is used as a reply indicating failure.
 **Header**
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
 | 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0xff   |
 
 **Payload**
@@ -66,6 +68,7 @@ This command supports a variable-length ASCII payload useful for debugging.
 **Header**
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
 | 0x22         | 0x69         | 0xHH            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x11   |
 
 * Remaining Bytes must be greater than or equal to 0x07
@@ -73,6 +76,7 @@ This command supports a variable-length ASCII payload useful for debugging.
 **Payload**
 
 | ASCII character(s) |
+| ------------------ |
 | 0xHH               |
 
 * Up to 249 ASCII characters (not null terminated)
@@ -83,11 +87,14 @@ This command supports a variable-length byte payload useful for data transfer.
 * Name: `common_data`
 * Required parameters: A sequence of one or more bytes
 * Optional parameters: None
-* Reply: `common_ack`
+* Reply:
+  * If the byte payload handler is successful: `common_ack`
+  * Otherwise: `common_nack`
 
 **Header**
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
 | 0x22         | 0x69         | 0xHH            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x16   |
 
 * Remaining Bytes must be greater than or equal to 0x07
@@ -95,6 +102,7 @@ This command supports a variable-length byte payload useful for data transfer.
 **Payload**
 
 | Byte(s) |
+| ------- |
 | 0xHH    |
 
 * Up to 249 bytes

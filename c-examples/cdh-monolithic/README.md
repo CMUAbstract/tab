@@ -1,11 +1,10 @@
-# C Implementation
+# CDH Monolithic Example
 
-C implementation of TAB
+A TAB example for the CDH board. The program is monolithic (no bootloader or
+application, just a single program).
 
 ## Directory Contents
 
-* [tab.h](tab.h): TAB C header file
-* [tab.c](tab.c): TAB C implementation file
 * [README.md](README.md): This document
 
 ## License
