@@ -20,6 +20,7 @@ bottom of the file for a change log entry template.
 * Utilities and scripts supporting C examples
 * A Python implementation file
 * Directories for Python RX and TX examples
+* A directory for a COM board "monolithic" TAB example
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
