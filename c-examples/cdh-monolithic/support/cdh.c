@@ -23,10 +23,12 @@
 
 // Functions required by TAB
 
+// Toy example that checks that data is strictly in ascending order
 int handle_common_data(common_data_t common_data_buff_i) {
+  uint8_t prev_byte;
   int strictly_increasing = 1;
-  uint8_t prev_byte = common_data_buff_i.data[0];
   for(size_t i=1; i<common_data_buff_i.end_index; i++) {
+    prev_byte = common_data_buff_i.data[i-1];
     if(prev_byte>=common_data_buff_i.data[i]) {
       strictly_increasing = 0;
       i = common_data_buff_i.end_index;
