@@ -1,0 +1,2 @@
+export PATH=$PATH:$(pwd)/../utilities/gcc-arm-none-eabi-10.3-2021.10/bin
+export PATH=$PATH:$(pwd)/../utilities/stlink/build/Release/bin

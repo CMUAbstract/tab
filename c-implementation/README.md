@@ -4,6 +4,8 @@ C implementation of TAB
 
 ## Directory Contents
 
+* [tab.h](tab.h): TAB C header file
+* [tab.c](tab.c): TAB C implementation file
 * [README.md](README.md): This document
 
 ## License

@@ -15,6 +15,17 @@ bottom of the file for a change log entry template.
 ### Added
 * Descriptions of the Common Ack, Common Nack, Common Debug, and Common Data
   commands to the documentation file
+* C implementation files
+* A directory for a CDH board "monolithic" TAB example
+* Utilities and scripts supporting C examples
+* A Python implementation file
+* Directories for Python RX and TX examples
+* A directory for a COM board "monolithic" TAB example
+
+### Fixed
+* Fixes Markdown table styling in the documentation file
+* Fixes initial commits of monolithic CDH C example and Python TX example
+* Fixes CDH Common Data handler implementation
 
 ## <a name="0.0.0"></a> 0.0.0
 
