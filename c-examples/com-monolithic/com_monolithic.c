@@ -16,21 +16,26 @@
 // TAB header
 #include <tab.h>    // TAB header
 
+// libopencm3
+#include <libopencm3/nrf/rtc.h>
+#include <libopencm3/nrf/gpio.h>
+#include <libopencm3/nrf/51/clock.h>
+
 // Main
 int main(void) {
-  // MCU initialization
   init_clock();
-  init_uart();
-  // TAB initialization
-  rx_cmd_buff_t rx_cmd_buff = {.size=CMD_MAX_LEN};
-  clear_rx_cmd_buff(&rx_cmd_buff);
-  tx_cmd_buff_t tx_cmd_buff = {.size=CMD_MAX_LEN};
-  clear_tx_cmd_buff(&tx_cmd_buff);
-  // TAB loop
+	
+	
+  gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13);
+  //gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
+  gpio_set(GPIO0, GPIO13);
+  //gpio_clear(GPIOC, GPIO12);
   while(1) {
-    rx_usart1(&rx_cmd_buff);           // Collect command bytes
-    reply(&rx_cmd_buff, &tx_cmd_buff); // Command reply logic
-    tx_usart1(&tx_cmd_buff);           // Send a response if any
+	for(int i=0; i<1600000; i++) {
+	  __asm__("nop");
+	}
+	gpio_toggle(GPIO0, GPIO13);
+	//gpio_toggle(GPIOC, GPIO12);
   }
   // Should never reach this point
   return 0;
