@@ -18,6 +18,7 @@ int handle_common_data(common_data_t common_data_buff_i);
 // Board initialization functions
 
 void init_clock(void);
+void init_clock_hse(void);
 void init_uart(void);
 
 // Feature functions
