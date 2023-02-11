@@ -2,19 +2,14 @@
 // COM board support implementation file
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Abhishek Anand
 //
 // See the top-level LICENSE file for the license.
 
 // Standard library headers
-#include <stdint.h>                 // uint8_t
+#include <stdint.h>                 
 
 // libopencm3 library
-//#include <libopencm3/stm32/flash.h> // used in init_clock
-//#include <libopencm3/stm32/gpio.h>  // used in init_gpio
-//#include <libopencm3/stm32/rcc.h>   // used in init_clock, init_rtc
-//#include <libopencm3/stm32/usart.h> // used in init_uart
-
 #include <libopencm3/nrf/51/clock.h>
 
 // Board-specific header
@@ -43,42 +38,9 @@ void init_clock(void) {
   
 	clock_set_xtal_freq(CLOCK_XTAL_FREQ_16MHZ);
 	clock_start_lfclk (true);
-	
-	clock_set_lfclk_src (CLOCK_LFCLK_SRC_RC); //CLOCK_LFCLK_SRC_RC 	
     
 }
 
 void init_uart(void) {
   // TODO
 }
-
-// Feature functions
-
-//void rx_usart1(rx_cmd_buff_t* rx_cmd_buff_o) {
-/*while(                                             // while
-   usart_get_flag(USART1,USART_ISR_RXNE) &&          //  USART1 RX not empty AND
-   rx_cmd_buff_o->state!=RX_CMD_BUFF_STATE_COMPLETE  //  Command not complete
-  ) {                                                //
-    uint8_t b = usart_recv(USART1);                  // Receive byte from RX pin
-    push_rx_cmd_buff(rx_cmd_buff_o, b);              // Push byte to buffer
-  }*/                                                  //
-//}
-
-//void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
-/*if(                                                  // if
-   rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE && // rx_cmd is valid AND
-   tx_cmd_buff_o->empty                                // tx_cmd is empty
-  ) {                                                  //
-    write_reply(rx_cmd_buff_o, tx_cmd_buff_o);         // execute cmd and reply
-  }*/                                                    //
-//}
-
-//void tx_usart1(tx_cmd_buff_t* tx_cmd_buff_o) {
-/*while(                                             // while
-   usart_get_flag(USART1,USART_ISR_TXE) &&           //  USART1 TX empty AND
-   !(tx_cmd_buff_o->empty)                           //  TX buffer not empty
-  ) {                                                //
-    uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);      // Pop byte from TX buffer
-    usart_send(USART1,b);                            // Send byte to TX pin
-  }*/                                                  //
-//}
