@@ -2,7 +2,7 @@
 // CDH board support implementation file
 //
 // Written by Bradley Denby
-// Other contributors: Shize Che
+// Other contributors: Chad Taylor
 //
 // See the top-level LICENSE file for the license.
 
