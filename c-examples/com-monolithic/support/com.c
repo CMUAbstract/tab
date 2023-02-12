@@ -2,7 +2,7 @@
 // COM board support implementation file
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Abhishek Anand
 //
 // See the top-level LICENSE file for the license.
 
@@ -14,6 +14,7 @@
 //#include <libopencm3/stm32/gpio.h>  // used in init_gpio
 //#include <libopencm3/stm32/rcc.h>   // used in init_clock, init_rtc
 //#include <libopencm3/stm32/usart.h> // used in init_uart
+#include <libopencm3/nrf/51/clock.h>  // used in init_clock
 
 // Board-specific header
 #include <com.h>                    // COM header
@@ -38,7 +39,8 @@ int handle_common_data(common_data_t common_data_buff_i) {
 // Board initialization functions
 
 void init_clock(void) {
-  // TODO
+  clock_set_xtal_freq(CLOCK_XTAL_FREQ_16MHZ);
+  clock_start_lfclk (true);
 }
 
 void init_uart(void) {

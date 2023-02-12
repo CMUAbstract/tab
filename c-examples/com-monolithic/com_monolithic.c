@@ -2,7 +2,7 @@
 // TAB C Example COM Monolithic
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Abhishek Anand
 //
 // See the top-level LICENSE file for the license.
 
