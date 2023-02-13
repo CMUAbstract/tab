@@ -107,6 +107,36 @@ This command supports a variable-length byte payload useful for data transfer.
 
 * Up to 249 bytes
 
+### <a name="bootloader-ack"></a> Bootloader Ack
+
+This acknowledgement command is most often used as a reply indicating success while the board is in bootloader mode for specific bootloader commands.
+* Name: `bootloader_ack`
+* Required parameters: None
+* Optional parameters: Single byte response reason parameter
+* Reply: `common_nack`
+  * Because this command is used as a reply, sending this command generates a
+    common nack reply.
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06 OR 0x07    | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x01   |
+
+**Optional Payload**
+
+| Byte    |
+| ------- |
+| 0xHH    |
+
+Reason:
+* PONG (response to ping): 0x00
+* ERASED (response to erase): 0x01
+* JUMP (response to jump): 0xFF
+* Page Number (response to write page) 
+
+
+
 ## <a name="protocol"></a> Protocol
 
 TODO

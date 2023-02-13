@@ -167,6 +167,10 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
         }
         break;
+      case BOOTLOADER_ACK_OPCODE:
+        tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+        tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        break;
       default:
         break;
     }
