@@ -14,7 +14,9 @@
 //#include <libopencm3/stm32/gpio.h>  // used in init_gpio
 //#include <libopencm3/stm32/rcc.h>   // used in init_clock, init_rtc
 //#include <libopencm3/stm32/usart.h> // used in init_uart
+// nrf
 #include <libopencm3/nrf/51/clock.h>  // used in init_clock
+#include <libopencm3/nrf/gpio.h>	  // used in init_gpio
 
 // Board-specific header
 #include <com.h>                    // COM header
@@ -41,6 +43,11 @@ int handle_common_data(common_data_t common_data_buff_i) {
 void init_clock(void) {
   clock_set_xtal_freq(CLOCK_XTAL_FREQ_16MHZ);
   clock_start_lfclk (true);
+}
+
+void init_led(void) {
+  gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13);
+  gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
 }
 
 void init_uart(void) {
