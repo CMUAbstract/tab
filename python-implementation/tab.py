@@ -19,11 +19,12 @@ START_BYTE_0 = 0x22
 START_BYTE_1 = 0x69
 
 ## Opcodes
-COMMON_ACK_OPCODE     = 0x10
-COMMON_NACK_OPCODE    = 0xff
-COMMON_DEBUG_OPCODE   = 0x11
-COMMON_DATA_OPCODE    = 0x16
-BOOTLOADER_ACK_OPCODE = 0x01
+COMMON_ACK_OPCODE       = 0x10
+COMMON_NACK_OPCODE      = 0xff
+COMMON_DEBUG_OPCODE     = 0x11
+COMMON_DATA_OPCODE      = 0x16
+BOOTLOADER_ACK_OPCODE   = 0x01
+BOOTLOADER_NACK_OPCODE  = 0x0f
 
 ## Route Nibble IDs
 GND = 0x00
@@ -205,6 +206,9 @@ class TxCmdBuff:
       elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_ACK_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
 
 # Helper functions
 
@@ -217,7 +221,7 @@ def bootloader_ack_reason_to_str(bootloader_ack_reason):
   elif bootloader_ack_reason==BOOTLOADER_ACK_REASON_JUMP:
     return 'jump'
   else:
-    return 'Page Number'
+    return 'page number'
 
 ## Converts ROUTE byte to string (either SRC or DST as specified)
 ##   route: the TAB route byte, e.g. data[ROUTE_INDEX]
@@ -265,6 +269,8 @@ def cmd_bytes_to_str(data):
     if (data[MSG_LEN_INDEX] == 0x07):
       pld_str += ' reason:'+'0x{:02x}'.format(data[PLD_START_INDEX])+\
        '('+bootloader_ack_reason_to_str(data[PLD_START_INDEX])+')'
+  elif data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
+    cmd_str += 'bootloader_nack'
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -304,6 +310,8 @@ class TxCmd:
     elif self.data[OPCODE_INDEX] == COMMON_DATA_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     elif self.data[OPCODE_INDEX] == BOOTLOADER_ACK_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     else:
       self.data[MSG_LEN_INDEX] = 0x06

@@ -133,7 +133,23 @@ Reason:
 * PONG (response to ping): 0x00
 * ERASED (response to erase): 0x01
 * JUMP (response to jump): 0xFF
-* Page Number (response to write page) 
+* Page Number (response to write page)
+
+### <a name="bootloader-nack"></a> Bootloader Nack
+
+This negative-acknowledgement command is used as a reply indicating failure while the board is in bootloader mode for specific bootloader commands.
+* Name: `bootloader_nack`
+* Required parameters: None
+* Optional parameters: None
+* Reply: `common_nack`
+  * Because this command is used as a reply, sending this command generates a
+    common nack reply.
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0F   |
 
 
 
