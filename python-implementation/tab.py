@@ -3,7 +3,7 @@
 # Python classes, functions, and variables supporting usage of TAB
 #
 # Written by Bradley Denby
-# Other contributors: None
+# Other contributors: Chad Taylor
 #
 # See the top-level LICENSE file for the license.
 
@@ -25,6 +25,7 @@ COMMON_DEBUG_OPCODE     = 0x11
 COMMON_DATA_OPCODE      = 0x16
 BOOTLOADER_ACK_OPCODE   = 0x01
 BOOTLOADER_NACK_OPCODE  = 0x0f
+BOOTLOADER_PING_OPCODE  = 0x00
 
 ## Route Nibble IDs
 GND = 0x00
@@ -209,6 +210,9 @@ class TxCmdBuff:
       elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_PING_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
 
 # Helper functions
 
@@ -271,6 +275,8 @@ def cmd_bytes_to_str(data):
        '('+bootloader_ack_reason_to_str(data[PLD_START_INDEX])+')'
   elif data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
     cmd_str += 'bootloader_nack'
+  elif data[OPCODE_INDEX] == BOOTLOADER_PING_OPCODE:
+    cmd_str += 'bootloader_ping'
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -312,6 +318,8 @@ class TxCmd:
     elif self.data[OPCODE_INDEX] == BOOTLOADER_ACK_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     elif self.data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == BOOTLOADER_PING_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     else:
       self.data[MSG_LEN_INDEX] = 0x06

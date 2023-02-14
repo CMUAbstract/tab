@@ -2,7 +2,7 @@
 // TAB serial communication protocol header file
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Chad Taylor
 //
 // See the top-level LICENSE file for the license.
 
@@ -28,6 +28,12 @@
 #define COMMON_DATA_OPCODE      ((uint8_t)0x16)
 #define BOOTLOADER_ACK_OPCODE   ((uint8_t)0x01)
 #define BOOTLOADER_NACK_OPCODE  ((uint8_t)0x0f)
+#define BOOTLOADER_PING_OPCODE  ((uint8_t)0x00)
+
+//// BOOTLOADER_ACK reasons
+#define BOOTLOADER_ACK_REASON_PONG   ((uint8_t)0x00)
+#define BOOTLOADER_ACK_REASON_ERASED ((uint8_t)0x01)
+#define BOOTLOADER_ACK_REASON_JUMP   ((uint8_t)0xff)
 
 //// Route Nibble IDs
 #define GND ((uint8_t)0x00)

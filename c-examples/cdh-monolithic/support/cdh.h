@@ -2,7 +2,7 @@
 // CDH board support header file
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Chad Taylor
 //
 // See the top-level LICENSE file for the license.
 
@@ -14,6 +14,7 @@
 
 // Functions required by TAB
 int handle_common_data(common_data_t common_data_buff_i);
+int bootloader_running(void);
 
 // Board initialization functions
 

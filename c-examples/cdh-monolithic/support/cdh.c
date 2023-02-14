@@ -37,6 +37,11 @@ int handle_common_data(common_data_t common_data_buff_i) {
   return strictly_increasing;
 }
 
+//Toy example that says whether MCU is currently in bootloader or application mode
+int bootloader_running(void) {
+  return 0;
+}
+
 // Board initialization functions
 
 void init_clock(void) {

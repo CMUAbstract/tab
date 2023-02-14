@@ -151,6 +151,21 @@ This negative-acknowledgement command is used as a reply indicating failure whil
 | ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
 | 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0F   |
 
+### <a name="bootloader-ping"></a> Bootloader Ping
+
+This ping command is used to check if the board is alive and is in the boot mode.
+* Name: `bootloader_ping`
+* Required parameters: None
+* Optional parameters: None
+* Reply:
+  * If board is in application mode and not bootloader mode: `common_nack`
+  * If board is in bootloader mode and not application mode: `bootloader_ack` with PONG parameter
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x00   |
 
 
 ## <a name="protocol"></a> Protocol
@@ -160,6 +175,6 @@ TODO
 ## <a name="license"></a> License
 
 Written by Bradley Denby  
-Other contributors: None
+Other contributors: Chad Taylor
 
 See the top-level LICENSE file for the license.
