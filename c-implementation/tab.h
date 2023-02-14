@@ -29,6 +29,7 @@
 #define BOOTLOADER_ACK_OPCODE   ((uint8_t)0x01)
 #define BOOTLOADER_NACK_OPCODE  ((uint8_t)0x0f)
 #define BOOTLOADER_PING_OPCODE  ((uint8_t)0x00)
+#define BOOTLOADER_ERASE_OPCODE ((uint8_t)0x0c)
 
 //// BOOTLOADER_ACK reasons
 #define BOOTLOADER_ACK_REASON_PONG   ((uint8_t)0x00)

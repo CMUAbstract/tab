@@ -12,9 +12,15 @@
 // TAB header
 #include <tab.h> // rx_cmd_buff_t, tx_cmd_buff_t, common_data_t
 
+//// Byte counts
+#define BYTES_PER_WORD ((uint32_t)4)
+#define BYTES_PER_CMD  ((uint32_t)128)
+#define BYTES_PER_PAGE ((uint32_t)2048)
+
 // Functions required by TAB
 int handle_common_data(common_data_t common_data_buff_i);
 int bootloader_running(void);
+int mcu_bootloader_erase(void);
 
 // Board initialization functions
 

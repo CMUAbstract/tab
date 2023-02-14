@@ -16,6 +16,7 @@
 // External handler functions
 extern int handle_common_data(common_data_t common_data_buff_i);
 extern int bootloader_running(void);
+extern int mcu_bootloader_erase(void);
 
 // Helper functions
 
@@ -181,6 +182,17 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x07);
           tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_ACK_OPCODE;
           tx_cmd_buff_o->data[PLD_START_INDEX] = BOOTLOADER_ACK_REASON_PONG;
+        } else {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        }
+        break;
+      case BOOTLOADER_ERASE_OPCODE:
+        if(bootloader_running()) {
+          success = mcu_bootloader_erase();
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x07);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_ACK_OPCODE;
+          tx_cmd_buff_o->data[PLD_START_INDEX] = BOOTLOADER_ACK_REASON_ERASED;
         } else {
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;

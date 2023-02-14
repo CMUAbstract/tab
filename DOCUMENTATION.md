@@ -167,6 +167,29 @@ This ping command is used to check if the board is alive and is in the boot mode
 | ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
 | 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x00   |
 
+### <a name="bootloader-erase"></a> Bootloader Erase
+
+This command is used to erase all programs written to the board while the board is in bootloader mode.
+* Name: `bootloader_erase`
+* Required parameters: None
+* Optional parameters: Status
+* Reply:
+  * If board is in application mode and not bootloader mode: `common_nack`
+  * If board is in bootloader mode and not application mode: `bootloader_ack` with ERASE parameter
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0C   |
+
+**Optional Payload**
+
+| Byte    |
+| ------- |
+| 0xHH    |
+
+* This parameter is currently unused in this implementation but can be used by other users
 
 ## <a name="protocol"></a> Protocol
 
