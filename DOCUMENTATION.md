@@ -12,6 +12,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootloader Ack](#bootloader-ack)
   * [Bootloader Nack](#bootloader-nack)
   * [Bootloader Ping](#bootloader-ping)
+  * [Bootlaoder Erase](#bootloader-erase)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 

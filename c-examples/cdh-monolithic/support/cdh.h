@@ -20,7 +20,7 @@
 // Functions required by TAB
 int handle_common_data(common_data_t common_data_buff_i);
 int bootloader_running(void);
-int mcu_bootloader_erase(void);
+int handle_bootloader_erase(void);
 
 // Board initialization functions
 

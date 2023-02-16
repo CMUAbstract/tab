@@ -2,7 +2,7 @@
 // COM board support implementation file
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Chad Taylor
 //
 // See the top-level LICENSE file for the license.
 
@@ -33,6 +33,29 @@ int handle_common_data(common_data_t common_data_buff_i) {
     }
   }
   return strictly_increasing;
+}
+
+//Toy example that says whether MCU is currently in bootloader or application mode
+int bootloader_running(void) {
+  return 0;
+}
+
+// Bootloader function to erase application space
+int handle_bootloader_erase(void){
+  /* // TODO
+  flash_unlock();
+  for(size_t subpage_id=0; subpage_id<255; subpage_id++) {
+    // subpage_id==0x00 writes to APP_ADDR==0x08008000 i.e. start of page 16
+    // So subpage_id==0x10 writes to addr 0x08008800 i.e. start of page 17 etc
+    // Need to erase page once before writing inside of it
+    if((subpage_id*BYTES_PER_CMD)%BYTES_PER_PAGE==0) {
+      flash_erase_page(16+(subpage_id*BYTES_PER_CMD)/BYTES_PER_PAGE);
+      flash_clear_status_flags();
+    }
+  }
+  flash_lock();
+  */
+  return 1;
 }
 
 // Board initialization functions
