@@ -10,6 +10,8 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Common Debug](#common-debug)
   * [Common Data](#common-data)
   * [Bootloader Ack](#bootloader-ack)
+  * [Bootloader Nack](#bootloader-nack)
+  * [Bootloader Ping](#bootloader-ping)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
