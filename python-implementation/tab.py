@@ -46,7 +46,7 @@ ROUTE_INDEX        = 7
 OPCODE_INDEX       = 8
 PLD_START_INDEX    = 9
 
-## TAOLST Command Enum Parameters
+## TAB Command Enum Parameters
 BOOTLOADER_ACK_REASON_PONG   = 0x00
 BOOTLOADER_ACK_REASON_ERASED = 0x01
 BOOTLOADER_ACK_REASON_JUMP   = 0xff
@@ -229,7 +229,7 @@ def bootloader_ack_reason_to_str(bootloader_ack_reason):
   elif bootloader_ack_reason==BOOTLOADER_ACK_REASON_JUMP:
     return 'jump'
   else:
-    return 'page number'
+    return '?'
 
 ## Converts ROUTE byte to string (either SRC or DST as specified)
 ##   route: the TAB route byte, e.g. data[ROUTE_INDEX]
