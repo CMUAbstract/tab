@@ -42,7 +42,6 @@ int bootloader_running(void) {
 
 // Bootloader function to erase application space
 int handle_bootloader_erase(void){
-  /* // TODO
   flash_unlock();
   for(size_t subpage_id=0; subpage_id<255; subpage_id++) {
     // subpage_id==0x00 writes to APP_ADDR==0x08008000 i.e. start of page 16
@@ -54,7 +53,6 @@ int handle_bootloader_erase(void){
     }
   }
   flash_lock();
-  */
   return 1;
 }
 
