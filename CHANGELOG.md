@@ -21,6 +21,7 @@ bottom of the file for a change log entry template.
 * A Python implementation file
 * Directories for Python RX and TX examples
 * A directory for a COM board "monolithic" TAB example
+* Clock and LED initialization functions for the monolithic COM board example
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
