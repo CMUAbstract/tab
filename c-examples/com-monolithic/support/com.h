@@ -2,7 +2,7 @@
 // COM board support header file
 //
 // Written by Bradley Denby
-// Other contributors: Abhishek Anand
+// Other contributors: Abhishek Anand, Chad Taylor
 //
 // See the top-level LICENSE file for the license.
 
@@ -15,6 +15,8 @@
 // Functions required by TAB
 
 int handle_common_data(common_data_t common_data_buff_i);
+int bootloader_running(void);
+int handle_bootloader_erase(void);
 
 // Board initialization functions
 

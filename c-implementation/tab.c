@@ -2,7 +2,7 @@
 // TAB serial communication protocol header file
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Chad Taylor
 //
 // See the top-level LICENSE file for the license.
 
@@ -15,6 +15,8 @@
 
 // External handler functions
 extern int handle_common_data(common_data_t common_data_buff_i);
+extern int bootloader_running(void);
+extern int handle_bootloader_erase(void);
 
 // Helper functions
 
@@ -162,6 +164,40 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
         if(success) {
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_ACK_OPCODE;
+        } else {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        }
+        break;
+      case BOOTLOADER_ACK_OPCODE:
+        tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+        tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        break;
+      case BOOTLOADER_NACK_OPCODE:
+        tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+        tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        break;
+      case BOOTLOADER_PING_OPCODE:
+        if(bootloader_running()) {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x07);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_ACK_OPCODE;
+          tx_cmd_buff_o->data[PLD_START_INDEX] = BOOTLOADER_ACK_REASON_PONG;
+        } else {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        }
+        break;
+      case BOOTLOADER_ERASE_OPCODE:
+        if(bootloader_running()) {
+          success = handle_bootloader_erase();
+          if (success) {
+            tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x07);
+            tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_ACK_OPCODE;
+            tx_cmd_buff_o->data[PLD_START_INDEX] = BOOTLOADER_ACK_REASON_ERASED;
+          } else {
+            tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+            tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_NACK_OPCODE;
+          }
         } else {
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;

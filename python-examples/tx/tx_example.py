@@ -139,3 +139,75 @@ cmd.clear()
 rx_cmd_buff.clear()
 msgid += 1
 time.sleep(1.0)
+
+#6. Test Bootloader Ack with expected reply of Common Nack
+cmd = TxCmd(BOOTLOADER_ACK_OPCODE, HWID, msgid, GND, CDH)
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
+
+#7. Test Bootloader Nack with expected reply of Common Nack
+cmd = TxCmd(BOOTLOADER_NACK_OPCODE, HWID, msgid, GND, CDH)
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
+
+#8. Test Bootloader Ping 
+cmd = TxCmd(BOOTLOADER_PING_OPCODE, HWID, msgid, GND, CDH)
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
+
+#9. Test Bootloader Erase 
+cmd = TxCmd(BOOTLOADER_ERASE_OPCODE, HWID, msgid, GND, CDH)
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)
