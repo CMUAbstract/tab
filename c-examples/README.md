@@ -6,12 +6,16 @@ TAB examples using the C implementation
 
 ```bash
 sudo apt install build-essential cmake gcc git libusb-1.0-0 libusb-1.0-0-dev
+cd scripts/
+./setup_dependencies.sh
 ```
 
 ## Directory Contents
 
 * [cdh-monolithic](cdh-monolithic/README.md): A simple example program for the
   CDH board
+* [com-monolithic](com-monolithic/README.md): A simple example program for the
+  COM board
 * [scripts](scripts/README.md): Scripts supporting TAB C examples
 * [utilities](utilities/README.md): Utilities for TAB C examples
 * [README.md](README.md): This document

@@ -6,6 +6,8 @@ TAB examples using the Python implementation
 
 ```bash
 sudo apt install python3-venv
+cd scripts/
+./setup_dependencies.sh
 ```
 
 ## Directory Contents

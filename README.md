@@ -30,11 +30,19 @@ TAB allows research satellites to accomplish three goals:
 
 **Dependencies**
 
-* The Python implementation has been tested for Python version 3.8.10. This
-  implementation makes use of the Python serial module, which is installed via a
-  Python virtual environment. Thus, the user must have Python virtual
-  environment support installed: `sudo apt install python3-venv`.
-* The C implementation has been tested on ARM MCUs (microcontroller units).
+* C examples:
+```bash
+sudo apt install build-essential cmake gcc git libusb-1.0-0 libusb-1.0-0-dev
+cd /path/to/tab/c-examples/scripts/
+./setup_dependencies.sh
+```
+
+* Python examples:
+```bash
+sudo apt install python3-venv
+cd /path/to/tab/python-examples/scripts/
+./setup_dependencies.sh
+```
 
 ## Directory Contents
 
