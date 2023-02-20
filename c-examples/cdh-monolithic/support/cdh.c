@@ -23,26 +23,25 @@
 
 // Functions required by TAB
 
-// Toy example that checks that data is strictly in ascending order
+// This example implementation of handle_common_data checks whether the bytes
+// are strictly increasing, i.e. each subsequent byte is strictly greater than
+// the previous byte
 int handle_common_data(common_data_t common_data_buff_i) {
-  uint8_t prev_byte;
   int strictly_increasing = 1;
+  uint8_t prev_byte = common_data_buff_i.data[0];
   for(size_t i=1; i<common_data_buff_i.end_index; i++) {
-    prev_byte = common_data_buff_i.data[i-1];
     if(prev_byte>=common_data_buff_i.data[i]) {
       strictly_increasing = 0;
       i = common_data_buff_i.end_index;
+    } else {
+      prev_byte = common_data_buff_i.data[i];
     }
   }
   return strictly_increasing;
 }
 
-//Toy example that says whether MCU is currently in bootloader or application mode
-int bootloader_running(void) {
-  return 1;
-}
-
-// Bootloader function to erase application space
+// This example implementation of handle_bootloader_erase erases all application
+// programs
 int handle_bootloader_erase(void){
   flash_unlock();
   for(size_t subpage_id=0; subpage_id<255; subpage_id++) {
@@ -55,6 +54,11 @@ int handle_bootloader_erase(void){
     }
   }
   flash_lock();
+  return 1;
+}
+
+// This example implementation of bootloader_active always returns true
+int bootloader_active(void) {
   return 1;
 }
 

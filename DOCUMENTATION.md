@@ -113,10 +113,11 @@ This command supports a variable-length byte payload useful for data transfer.
 
 ### <a name="bootloader-ack"></a> Bootloader Ack
 
-This acknowledgement command is most often used as a reply indicating success while the board is in bootloader mode for specific bootloader commands.
+The bootloader acknowledgement command is exclusively used as a bootloader reply
+indicating success.
 * Name: `bootloader_ack`
 * Required parameters: None
-* Optional parameters: Single byte response reason parameter
+* Optional parameters: Single byte response (reason parameter)
 * Reply: `common_nack`
   * Because this command is used as a reply, sending this command generates a
     common nack reply.
@@ -129,7 +130,7 @@ This acknowledgement command is most often used as a reply indicating success wh
 
 **Optional Payload**
 
-| Byte    |
+| Reason  |
 | ------- |
 | 0xHH    |
 
@@ -141,7 +142,8 @@ Reason:
 
 ### <a name="bootloader-nack"></a> Bootloader Nack
 
-This negative-acknowledgement command is used as a reply indicating failure while the board is in bootloader mode for specific bootloader commands.
+The bootloader negative-acknowledgement command is used as a bootloader reply
+indicating failure.
 * Name: `bootloader_nack`
 * Required parameters: None
 * Optional parameters: None
@@ -157,13 +159,13 @@ This negative-acknowledgement command is used as a reply indicating failure whil
 
 ### <a name="bootloader-ping"></a> Bootloader Ping
 
-This ping command is used to check if the board is alive and is in the boot mode.
+The bootloader ping command checks whether the bootloader is active.
 * Name: `bootloader_ping`
 * Required parameters: None
 * Optional parameters: None
 * Reply:
-  * If board is in application mode and not bootloader mode: `common_nack`
-  * If board is in bootloader mode and not application mode: `bootloader_ack` with PONG parameter
+  * If the bootloader is active: `bootloader_ack` with the PONG payload
+  * Otherwise: `common_nack`
 
 **Header**
 
@@ -173,13 +175,16 @@ This ping command is used to check if the board is alive and is in the boot mode
 
 ### <a name="bootloader-erase"></a> Bootloader Erase
 
-This command is used to erase all programs written to the board while the board is in bootloader mode.
+This command instructs the bootloader to erase all applications.
 * Name: `bootloader_erase`
 * Required parameters: None
 * Optional parameters: Status
 * Reply:
-  * If board is in application mode and not bootloader mode: `common_nack`
-  * If board is in bootloader mode and not application mode: `bootloader_ack` with ERASE parameter
+  * If the bootloader is active and successfully performs the erase:
+    `bootloader_ack` with the ERASE payload
+  * If the bootloader is active and fails to perform the erase:
+    `bootloader_nack`
+  * Otherwise: `common_nack`
 
 **Header**
 
@@ -189,11 +194,11 @@ This command is used to erase all programs written to the board while the board 
 
 **Optional Payload**
 
-| Byte    |
+| Status  |
 | ------- |
 | 0xHH    |
 
-* This parameter is currently unused in this implementation but can be used by other users
+* The status parameter is currently unused.
 
 ## <a name="protocol"></a> Protocol
 

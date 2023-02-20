@@ -14,9 +14,10 @@
 #include <tab.h>    // Header file
 
 // External handler functions
+
 extern int handle_common_data(common_data_t common_data_buff_i);
-extern int bootloader_running(void);
 extern int handle_bootloader_erase(void);
+extern int bootloader_active(void);
 
 // Helper functions
 
@@ -178,7 +179,7 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
         tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
         break;
       case BOOTLOADER_PING_OPCODE:
-        if(bootloader_running()) {
+        if(bootloader_active()) {
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x07);
           tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_ACK_OPCODE;
           tx_cmd_buff_o->data[PLD_START_INDEX] = BOOTLOADER_ACK_REASON_PONG;
@@ -188,9 +189,9 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
         }
         break;
       case BOOTLOADER_ERASE_OPCODE:
-        if(bootloader_running()) {
+        if(bootloader_active()) {
           success = handle_bootloader_erase();
-          if (success) {
+          if(success) {
             tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x07);
             tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_ACK_OPCODE;
             tx_cmd_buff_o->data[PLD_START_INDEX] = BOOTLOADER_ACK_REASON_ERASED;

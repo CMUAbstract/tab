@@ -176,7 +176,7 @@ rx_cmd_buff.clear()
 msgid += 1
 time.sleep(1.0)
 
-#8. Test Bootloader Ping 
+#8. Test Bootloader Ping with expected reply of Bootloader Ack with Pong reason
 cmd = TxCmd(BOOTLOADER_PING_OPCODE, HWID, msgid, GND, CDH)
 byte_i = 0
 while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
@@ -194,7 +194,8 @@ rx_cmd_buff.clear()
 msgid += 1
 time.sleep(1.0)
 
-#9. Test Bootloader Erase 
+#9. Test Bootloader Erase with expected reply of Bootloader Ack with Erase
+#   reason
 cmd = TxCmd(BOOTLOADER_ERASE_OPCODE, HWID, msgid, GND, CDH)
 byte_i = 0
 while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
