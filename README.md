@@ -33,6 +33,8 @@ TAB allows research satellites to accomplish three goals:
 * C examples:
 ```bash
 sudo apt install build-essential cmake gcc git libusb-1.0-0 libusb-1.0-0-dev
+sudo usermod -aG dialout $USER
+sudo shutdown --reboot now
 cd /path/to/tab/c-examples/scripts/
 ./setup_dependencies.sh
 ```

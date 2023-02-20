@@ -6,6 +6,8 @@ TAB examples using the C implementation
 
 ```bash
 sudo apt install build-essential cmake gcc git libusb-1.0-0 libusb-1.0-0-dev
+sudo usermod -aG dialout $USER
+sudo shutdown --reboot now
 cd scripts/
 ./setup_dependencies.sh
 ```
