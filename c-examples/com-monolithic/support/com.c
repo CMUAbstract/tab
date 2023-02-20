@@ -2,27 +2,28 @@
 // COM board support implementation file
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Abhishek Anand, Chad Taylor
 //
 // See the top-level LICENSE file for the license.
 
 // Standard library headers
-#include <stdint.h>                 // uint8_t
+#include <stdint.h>                     // uint8_t
 
 // libopencm3 library
-//#include <libopencm3/stm32/flash.h> // used in init_clock
-//#include <libopencm3/stm32/gpio.h>  // used in init_gpio
-//#include <libopencm3/stm32/rcc.h>   // used in init_clock, init_rtc
-//#include <libopencm3/stm32/usart.h> // used in init_uart
+#include <libopencm3/nrf/51/clock.h>    // clock_set_xtal_freq
+#include <libopencm3/nrf/common/gpio.h> // gpio_mode_setup
 
 // Board-specific header
-#include <com.h>                    // COM header
+#include <com.h>                        // COM header
 
 // TAB header
-#include <tab.h>                    // TAB header
+#include <tab.h>                        // TAB header
 
 // Functions required by TAB
 
+// This example implementation of handle_common_data checks whether the bytes
+// are strictly increasing, i.e. each subsequent byte is strictly greater than
+// the previous byte
 int handle_common_data(common_data_t common_data_buff_i) {
   int strictly_increasing = 1;
   uint8_t prev_byte = common_data_buff_i.data[0];
@@ -30,15 +31,35 @@ int handle_common_data(common_data_t common_data_buff_i) {
     if(prev_byte>=common_data_buff_i.data[i]) {
       strictly_increasing = 0;
       i = common_data_buff_i.end_index;
+    } else {
+      prev_byte = common_data_buff_i.data[i];
     }
   }
   return strictly_increasing;
 }
 
+// This example implementation of handle_bootloader_erase erases all application
+// programs
+int handle_bootloader_erase(void){
+  // TODO
+  return 0;
+}
+
+// This example implementation of bootloader_active always returns true
+int bootloader_active(void) {
+  return 1;
+}
+
 // Board initialization functions
 
 void init_clock(void) {
-  // TODO
+  clock_set_xtal_freq(CLOCK_XTAL_FREQ_16MHZ);
+  clock_start_hfclk(true);
+}
+
+void init_led(void) {
+  gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13);
+  gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
 }
 
 void init_uart(void) {

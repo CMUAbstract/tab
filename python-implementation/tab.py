@@ -3,7 +3,7 @@
 # Python classes, functions, and variables supporting usage of TAB
 #
 # Written by Bradley Denby
-# Other contributors: None
+# Other contributors: Chad Taylor
 #
 # See the top-level LICENSE file for the license.
 
@@ -19,10 +19,14 @@ START_BYTE_0 = 0x22
 START_BYTE_1 = 0x69
 
 ## Opcodes
-COMMON_ACK_OPCODE   = 0x10
-COMMON_NACK_OPCODE  = 0xff
-COMMON_DEBUG_OPCODE = 0x11
-COMMON_DATA_OPCODE  = 0x16
+COMMON_ACK_OPCODE       = 0x10
+COMMON_NACK_OPCODE      = 0xff
+COMMON_DEBUG_OPCODE     = 0x11
+COMMON_DATA_OPCODE      = 0x16
+BOOTLOADER_ACK_OPCODE   = 0x01
+BOOTLOADER_NACK_OPCODE  = 0x0f
+BOOTLOADER_PING_OPCODE  = 0x00
+BOOTLOADER_ERASE_OPCODE = 0x0c
 
 ## Route Nibble IDs
 GND = 0x00
@@ -41,6 +45,11 @@ MSG_ID_MSB_INDEX   = 6
 ROUTE_INDEX        = 7
 OPCODE_INDEX       = 8
 PLD_START_INDEX    = 9
+
+## TAB Command Enum Parameters
+BOOTLOADER_ACK_REASON_PONG   = 0x00
+BOOTLOADER_ACK_REASON_ERASED = 0x01
+BOOTLOADER_ACK_REASON_JUMP   = 0xff
 
 ## Route nodes
 class Route(enum.Enum):
@@ -196,8 +205,31 @@ class TxCmdBuff:
         else:
           self.data[MSG_LEN_INDEX] = 0x06
           self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_ACK_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_PING_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_ERASE_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
 
 # Helper functions
+
+## Converts BOOTLOADER_ACK_REASON to string
+def bootloader_ack_reason_to_str(bootloader_ack_reason):
+  if bootloader_ack_reason==BOOTLOADER_ACK_REASON_PONG:
+    return 'pong'
+  elif bootloader_ack_reason==BOOTLOADER_ACK_REASON_ERASED:
+    return 'erased'
+  elif bootloader_ack_reason==BOOTLOADER_ACK_REASON_JUMP:
+    return 'jump'
+  else:
+    return '?'
 
 ## Converts ROUTE byte to string (either SRC or DST as specified)
 ##   route: the TAB route byte, e.g. data[ROUTE_INDEX]
@@ -240,6 +272,17 @@ def cmd_bytes_to_str(data):
     cmd_str += 'common_data'
     for i in range(0,data[MSG_LEN_INDEX]-0x06):
       pld_str += ' 0x{:02x}'.format(data[PLD_START_INDEX+i])
+  elif data[OPCODE_INDEX] == BOOTLOADER_ACK_OPCODE:
+    cmd_str += 'bootloader_ack'
+    if (data[MSG_LEN_INDEX] == 0x07):
+      pld_str += ' reason:'+'0x{:02x}'.format(data[PLD_START_INDEX])+\
+       '('+bootloader_ack_reason_to_str(data[PLD_START_INDEX])+')'
+  elif data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
+    cmd_str += 'bootloader_nack'
+  elif data[OPCODE_INDEX] == BOOTLOADER_PING_OPCODE:
+    cmd_str += 'bootloader_ping'
+  elif data[OPCODE_INDEX] == BOOTLOADER_ERASE_OPCODE:
+    cmd_str += 'bootloader_erase'
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -277,6 +320,14 @@ class TxCmd:
     elif self.data[OPCODE_INDEX] == COMMON_DEBUG_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     elif self.data[OPCODE_INDEX] == COMMON_DATA_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == BOOTLOADER_ACK_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == BOOTLOADER_PING_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == BOOTLOADER_ERASE_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     else:
       self.data[MSG_LEN_INDEX] = 0x06

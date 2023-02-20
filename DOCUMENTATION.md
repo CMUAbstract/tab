@@ -9,6 +9,10 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Common Nack](#common-nack)
   * [Common Debug](#common-debug)
   * [Common Data](#common-data)
+  * [Bootloader Ack](#bootloader-ack)
+  * [Bootloader Nack](#bootloader-nack)
+  * [Bootloader Ping](#bootloader-ping)
+  * [Bootlaoder Erase](#bootloader-erase)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
@@ -107,6 +111,95 @@ This command supports a variable-length byte payload useful for data transfer.
 
 * Up to 249 bytes
 
+### <a name="bootloader-ack"></a> Bootloader Ack
+
+The bootloader acknowledgement command is exclusively used as a bootloader reply
+indicating success.
+* Name: `bootloader_ack`
+* Required parameters: None
+* Optional parameters: Single byte response (reason parameter)
+* Reply: `common_nack`
+  * Because this command is used as a reply, sending this command generates a
+    common nack reply.
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06 OR 0x07    | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x01   |
+
+**Optional Payload**
+
+| Reason  |
+| ------- |
+| 0xHH    |
+
+Reason:
+* PONG (response to ping): 0x00
+* ERASED (response to erase): 0x01
+* JUMP (response to jump): 0xFF
+* Page Number (response to write page)
+
+### <a name="bootloader-nack"></a> Bootloader Nack
+
+The bootloader negative-acknowledgement command is used as a bootloader reply
+indicating failure.
+* Name: `bootloader_nack`
+* Required parameters: None
+* Optional parameters: None
+* Reply: `common_nack`
+  * Because this command is used as a reply, sending this command generates a
+    common nack reply.
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0F   |
+
+### <a name="bootloader-ping"></a> Bootloader Ping
+
+The bootloader ping command checks whether the bootloader is active.
+* Name: `bootloader_ping`
+* Required parameters: None
+* Optional parameters: None
+* Reply:
+  * If the bootloader is active: `bootloader_ack` with the PONG payload
+  * Otherwise: `common_nack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x00   |
+
+### <a name="bootloader-erase"></a> Bootloader Erase
+
+This command instructs the bootloader to erase all applications.
+* Name: `bootloader_erase`
+* Required parameters: None
+* Optional parameters: Status
+* Reply:
+  * If the bootloader is active and successfully performs the erase:
+    `bootloader_ack` with the ERASE payload
+  * If the bootloader is active and fails to perform the erase:
+    `bootloader_nack`
+  * Otherwise: `common_nack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0C   |
+
+**Optional Payload**
+
+| Status  |
+| ------- |
+| 0xHH    |
+
+* The status parameter is currently unused.
+
 ## <a name="protocol"></a> Protocol
 
 TODO
@@ -114,6 +207,6 @@ TODO
 ## <a name="license"></a> License
 
 Written by Bradley Denby  
-Other contributors: None
+Other contributors: Chad Taylor
 
 See the top-level LICENSE file for the license.

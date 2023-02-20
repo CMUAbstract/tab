@@ -2,7 +2,7 @@
 // TAB C Example COM Monolithic
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Abhishek Anand
 //
 // See the top-level LICENSE file for the license.
 
@@ -20,6 +20,7 @@
 int main(void) {
   // MCU initialization
   init_clock();
+  init_led();
   init_uart();
   // TAB initialization
   rx_cmd_buff_t rx_cmd_buff = {.size=CMD_MAX_LEN};
