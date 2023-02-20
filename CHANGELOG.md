@@ -30,6 +30,7 @@ bottom of the file for a change log entry template.
 * Fixes initial commits of monolithic CDH C example and Python TX example
 * Fixes CDH Common Data handler implementation
 * Adds additional details to documented C example dependencies
+* Adds additional details to documented Python example dependencies
 
 ## <a name="0.0.0"></a> 0.0.0
 
