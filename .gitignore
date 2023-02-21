@@ -8,6 +8,10 @@ __pycache__
 libopencm3/
 
 # C examples utilities
+gcc-9.3.0-build/
+gcc-9.3.0-install/
+gcc-9.3.0/
+gcc-9.3.0.tar.gz
 stlink/
 gcc-arm-none-eabi-10.3-2021.10/
 gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2

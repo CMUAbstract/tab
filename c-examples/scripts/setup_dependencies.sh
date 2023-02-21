@@ -23,13 +23,36 @@ echo ""
 echo "IMPORTANT: manually install dependencies in the C examples README first"
 echo ""
 
-# stlink
+# GCC 9.3.0 to compile old version of stlink
+cd ../utilities/
+DIR=$(pwd)
+wget https://ftp.gnu.org/gnu/gcc/gcc-9.3.0/gcc-9.3.0.tar.gz
+tar xzf gcc-9.3.0.tar.gz
+cd gcc-9.3.0/
+./contrib/download_prerequisites
+cd ../
+if [ ! -d "$DIR/gcc-9.3.0-build" ]
+then
+  mkdir $DIR/gcc-9.3.0-build/
+fi
+if [ ! -d "$DIR/gcc-9.3.0-install" ]
+then
+  mkdir $DIR/gcc-9.3.0-install/
+  cd gcc-9.3.0-build/
+  $DIR/gcc-9.3.0/configure --disable-multilib --prefix=$DIR/gcc-9.3.0-install
+  make -j $(nproc)
+  make install
+fi
+
+# stlink v1.6.1 patched and compiled with GCC 9.3.0 (annoyingly specific)
 cd ../utilities/
 git clone https://github.com/stlink-org/stlink.git
 cd stlink/
-git checkout --quiet v1.7.0
+git checkout --quiet v1.6.1
+sed -i -e "s,set(SSP_LIB -static ssp),set(SSP_LIB ssp)," CMakeLists.txt
+sed -i -e 's,execute_process (COMMAND bash -c "export LD_LIBRARY_PATH="${CMAKE_INSTALL_LIBDIR}" "),execute_process (COMMAND bash -c "export LD_LIBRARY_PATH=" ${CMAKE_INSTALL_LIBDIR}" "),' CMakeLists.txt
 make clean
-make release
+CC=$DIR/gcc-9.3.0-install/bin/gcc make release
 
 # GNU Arm Embedded Toolchain
 cd ../
