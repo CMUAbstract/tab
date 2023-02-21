@@ -17,6 +17,7 @@
 
 extern int handle_common_data(common_data_t common_data_buff_i);
 extern int handle_bootloader_erase(void);
+extern int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff);
 extern int bootloader_active(void);
 
 // Helper functions
@@ -200,6 +201,24 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
             tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_NACK_OPCODE;
           }
         } else {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        }
+        break;
+      case BOOTLOADER_WRITE_PAGE_OPCODE:
+        if(bootloader_active()) {
+          // initialize common variables to known values
+          success = bootloader_write_data(rx_cmd_buff_o);
+          if(success) {
+            tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x07);
+            tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_ACK_OPCODE;
+            tx_cmd_buff_o->data[PLD_START_INDEX] =
+             rx_cmd_buff_o->data[PLD_START_INDEX];
+          } else {
+            tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+            tx_cmd_buff_o->data[OPCODE_INDEX] = BOOTLOADER_NACK_OPCODE;
+          }
+        } else{
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
         }

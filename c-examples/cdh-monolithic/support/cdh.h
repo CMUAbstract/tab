@@ -16,10 +16,14 @@
 #define BYTES_PER_CMD  ((uint32_t)128)
 #define BYTES_PER_PAGE ((uint32_t)2048)
 
+//// Application start address
+#define APP_ADDR   ((uint32_t)0x08008000U)
+
 // Functions required by TAB
 
 int handle_common_data(common_data_t common_data_buff_i);
 int handle_bootloader_erase(void);
+int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff);
 int bootloader_active(void);
 
 // Board initialization functions

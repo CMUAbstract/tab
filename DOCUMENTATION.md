@@ -13,6 +13,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootloader Nack](#bootloader-nack)
   * [Bootloader Ping](#bootloader-ping)
   * [Bootlaoder Erase](#bootloader-erase)
+  * [Bootloader Write Page](#bootloader-write-page)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
@@ -199,6 +200,33 @@ This command instructs the bootloader to erase all applications.
 | 0xHH    |
 
 * The status parameter is currently unused.
+
+### <a name="bootloader-write-page"></a> Bootloader Write Page
+
+This command instructs the bootloader to erase all applications.
+* Name: `bootloader_write_page`
+* Required parameters: None
+* Optional parameters: Status
+* Reply:
+  * If the bootloader is active and successfully performs the erase:
+    `bootloader_ack` with the ERASE payload
+  * If the bootloader is active and fails to perform the erase:
+    `bootloader_nack`
+  * Otherwise: `common_nack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x07 OR 0x87    | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x02   |
+
+**Optional Payload**
+
+| Page Number  | Page Data | 
+| ------------ | --------- |
+| 0xHH         | 0xHH      |
+
+* Page Data has 128 bytes.
 
 ## <a name="protocol"></a> Protocol
 
