@@ -45,7 +45,7 @@ then
 fi
 
 # stlink v1.6.1 patched and compiled with GCC 9.3.0 (annoyingly specific)
-cd ../utilities/
+cd ../
 git clone https://github.com/stlink-org/stlink.git
 cd stlink/
 git checkout --quiet v1.6.1
