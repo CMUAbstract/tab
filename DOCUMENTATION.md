@@ -14,6 +14,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootloader Ping](#bootloader-ping)
   * [Bootlaoder Erase](#bootloader-erase)
   * [Bootloader Write Page](#bootloader-write-page)
+  * [Bootloader Write Page Addr32](#bootloader-write-page-addr32)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
@@ -125,9 +126,9 @@ indicating success.
 
 **Header**
 
-| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
-| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
-| 0x22         | 0x69         | 0x06 OR 0x07    | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x01   |
+| Start Byte 0 | Start Byte 1 | Remaining Bytes      | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | -------------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06 OR 0x07 OR 0x0a | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x01   |
 
 **Optional Payload**
 
@@ -140,6 +141,7 @@ Reason:
 * ERASED (response to erase): 0x01
 * JUMP (response to jump): 0xFF
 * Page Number (response to write page)
+* Address (response to write page addr32)
 
 ### <a name="bootloader-nack"></a> Bootloader Nack
 
@@ -203,14 +205,15 @@ This command instructs the bootloader to erase all applications.
 
 ### <a name="bootloader-write-page"></a> Bootloader Write Page
 
-This command instructs the bootloader to erase all applications.
+This command is used to write programs to the application memory space
+of the board using the page number to calculate the address to write to.
 * Name: `bootloader_write_page`
-* Required parameters: None
-* Optional parameters: Status
+* Required parameters: Page Number
+* Optional parameters: Page Data
 * Reply:
-  * If the bootloader is active and successfully performs the erase:
-    `bootloader_ack` with the ERASE payload
-  * If the bootloader is active and fails to perform the erase:
+  * If the bootloader is active and successfully performs the write:
+    `bootloader_ack` with the Page Number as the payload
+  * If the bootloader is active and fails to perform the write:
     `bootloader_nack`
   * Otherwise: `common_nack`
 
@@ -227,6 +230,37 @@ This command instructs the bootloader to erase all applications.
 | 0xHH         | 0xHH      |
 
 * Page Data has 128 bytes.
+
+### <a name="bootloader-write-page-addr32"></a> Bootloader Write Page Addr32
+
+This command is used to write programs to the application memory space
+of the board using the address provided.
+* Name: `bootloader_write_page_addr32`
+* Required parameters: Address
+* Optional parameters: Page Data
+* Reply:
+  * If the bootloader is active and successfully performs the write:
+    `bootloader_ack` with the Address as the payload
+  * If the bootloader is active and fails to perform the write:
+    `bootloader_nack`
+  * Otherwise: `common_nack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x0a OR 0x8a    | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x20   |
+
+**Optional Payload**
+
+| Addr Byte1 | Addr Byte2 | Addr Byte3 | Addr Byte4 | Page Data |
+| ---------- | ---------- | ---------- | ---------- | --------- |
+| 0xHH       | 0xHH       | 0xHH       | 0xHH       | 0xHH      |
+
+* Addr Byte1 is the MSByte
+* Addr Byte4 is the LSByte
+* Page Data has 128 bytes.
+
 
 ## <a name="protocol"></a> Protocol
 
