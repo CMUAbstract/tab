@@ -215,8 +215,7 @@ time.sleep(1.0)
 
 #10. Test Bootloader Write Page with expected reply of Bootloader Ack
 #    with Page Number reason
-print("Bootloader Write Page")
-cmd = TxCmd(BOOTLOADER_WRITE_PAGE_OPCODE, HWID, msgid, SRC, DST)
+cmd = TxCmd(BOOTLOADER_WRITE_PAGE_OPCODE, HWID, msgid, GND, CDH)
 dummy_page_num = 1
 dummy_page = [0] * 128
 cmd.bootloader_write_page(page_number=dummy_page_num, page_data=dummy_page)
@@ -238,7 +237,7 @@ time.sleep(1.0)
 
 #11. Test Bootloader Write Page Addr32 with expected reply of 
 #    Bootloader Ack with Address reason
-cmd = TxCmd(BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE, HWID, msgid, SRC, DST)
+cmd = TxCmd(BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE, HWID, msgid, GND, CDH)
 page_num = 0
 addr_write = START_ADDR + page_num * BYTES_PER_CMD
 dummy_page = [0] * 128
@@ -257,3 +256,22 @@ print('reply: '+str(rx_cmd_buff)+'\n')
 cmd.clear()
 rx_cmd_buff.clear()
 msgid += 1
+
+#11. Test Bootloader Jump with expected reply of 
+#    Bootloader Nack
+cmd = TxCmd(BOOTLOADER_JUMP_OPCODE, HWID, msgid, GND, CDH)
+byte_i = 0
+while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+  if byte_i < cmd.get_byte_count():
+    serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+    byte_i += 1
+  if serial_port.in_waiting>0:
+    bytes = serial_port.read(1)
+    for b in bytes:
+      rx_cmd_buff.append_byte(b)
+print('txcmd: '+str(cmd))
+print('reply: '+str(rx_cmd_buff)+'\n')
+cmd.clear()
+rx_cmd_buff.clear()
+msgid += 1
+time.sleep(1.0)

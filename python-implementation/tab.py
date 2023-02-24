@@ -29,6 +29,7 @@ BOOTLOADER_PING_OPCODE              = 0x00
 BOOTLOADER_ERASE_OPCODE             = 0x0c
 BOOTLOADER_WRITE_PAGE_OPCODE        = 0x02
 BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE = 0x20
+BOOTLOADER_JUMP_OPCODE              = 0x0b
 
 ## Route Nibble IDs
 GND = 0x00
@@ -229,6 +230,9 @@ class TxCmdBuff:
       elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
 
 # Helper functions
 
@@ -319,6 +323,8 @@ def cmd_bytes_to_str(data):
         pld_str += ' hex_data:'
         for i in range(0,data[MSG_LEN_INDEX]-0x07):
             pld_str += '{:02x}'.format(data[PLD_START_INDEX+4+i])
+  elif data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
+    cmd_str += 'bootloader_jump'
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -371,6 +377,8 @@ class TxCmd:
     elif self.data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE:
       self.data[MSG_LEN_INDEX]    = 0x0a
       self.data[PLD_START_INDEX] = 0x00
+    elif self.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
     else:
       self.data[MSG_LEN_INDEX] = 0x06
 

@@ -15,6 +15,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootlaoder Erase](#bootloader-erase)
   * [Bootloader Write Page](#bootloader-write-page)
   * [Bootloader Write Page Addr32](#bootloader-write-page-addr32)
+  * [Bootloader Jump](#bootloader-jump)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
@@ -261,6 +262,24 @@ of the board using the address provided.
 * Addr Byte4 is the LSByte
 * Page Data has 128 bytes.
 
+### <a name="bootloader-jump"></a> Bootloader Jump
+
+The command instructs the bootloader to jump to a different address in memory
+* Name: `bootloader_jump`
+* Required parameters: None
+* Optional parameters: None
+* Reply:
+  * If the bootloader is active and successfully performs the jump:
+    `bootloader_ack` with the JUMP payload
+  * If the bootloader is active and fails to perform the jump:
+    `bootloader_nack`
+  * Otherwise: `common_nack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0b   |
 
 ## <a name="protocol"></a> Protocol
 

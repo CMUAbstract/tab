@@ -32,6 +32,7 @@
 #define BOOTLOADER_ERASE_OPCODE             ((uint8_t)0x0c)
 #define BOOTLOADER_WRITE_PAGE_OPCODE        ((uint8_t)0x02)
 #define BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE ((uint8_t)0x20)
+#define BOOTLOADER_JUMP_OPCODE              ((uint8_t)0x0b)
 
 //// BOOTLOADER_ACK reasons
 #define BOOTLOADER_ACK_REASON_PONG   ((uint8_t)0x00)

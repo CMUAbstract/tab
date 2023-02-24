@@ -14,12 +14,17 @@
 #include <libopencm3/stm32/gpio.h>  // used in init_gpio
 #include <libopencm3/stm32/rcc.h>   // used in init_clock, init_rtc
 #include <libopencm3/stm32/usart.h> // used in init_uart
+#include <libopencm3/cm3/scb.h>     // SCB_VTOR
 
 // Board-specific header
 #include <cdh.h>                    // Header file
 
 // TAB header
 #include <tab.h>                    // TAOLST protocol macros, typedefs, fnctns
+
+// Variables
+extern int in_bootloader;    // Used in bootloader main to indicate MCU state
+extern int app_jump_pending; // Used in bootloader main to signal jump to app
 
 // Functions required by TAB
 
@@ -132,9 +137,46 @@ int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff){
   }
 }
 
-// This example implementation of bootloader_active always returns true
+// This example implementation of bl_check_app checks whether the jump address
+// is valid or not
+int bl_check_app(void) {
+  // Does the first four bytes of the application represent the initialization
+  // location of a stack pointer within the boundaries of the RAM?
+  return (((*(uint32_t*)APP_ADDR)-SRAM1_BASE) <= SRAM1_SIZE);
+}
+
+// This example implementation of bl_jump_to_app jumps to a hardcoded
+// address in memory called APP_ADDR
+void bl_jump_to_app(void) {
+  // The first 4 bytes hold the stack address, so jump address is after that
+  uint32_t jump_addr =
+   *(volatile uint32_t*)(APP_ADDR+((uint32_t)0x00000004U));
+  // Create a jump() function
+  void (*jump)(void) = (void (*)(void))jump_addr;
+  // Set the vector table
+  SCB_VTOR = APP_ADDR;
+  // Set the master stack pointer
+  __asm__ volatile("msr msp, %0"::"g" (*(volatile uint32_t*)APP_ADDR));
+  // Jump to the application
+  jump();
+}
+
+// This example implementation of handle_bootloader_jump sets app_jump_pending
+// to 1 to trigger a jump after checking for a valid app address
+int handle_bootloader_jump(void){
+  if (bl_check_app()) {
+    app_jump_pending = 1;
+    return 1;
+  } else {                  // Something wrong, abort jump
+    return 0;
+  }
+  
+}
+
+// This example implementation of bootloader_active always returns whether the
+// board is in bootloader mode or not
 int bootloader_active(void) {
-  return 1;
+  return in_bootloader;
 }
 
 // Board initialization functions
