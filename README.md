@@ -35,11 +35,15 @@ TAB allows research satellites to accomplish three goals:
 sudo apt install build-essential cmake gcc git libusb-1.0-0 libusb-1.0-0-dev
 cd /path/to/tab/c-examples/scripts/
 ./setup_dependencies.sh
+sudo cp ../utilities/stlink/config/udev/rules.d/*.rules /etc/udev/rules.d/
+sudo shutdown --reboot now
 ```
 
 * Python examples:
 ```bash
 sudo apt install python3-venv
+sudo usermod -aG dialout $USER
+sudo shutdown --reboot now
 cd /path/to/tab/python-examples/scripts/
 ./setup_dependencies.sh
 ```

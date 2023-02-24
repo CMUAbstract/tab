@@ -6,7 +6,9 @@ TAB examples using the Python implementation
 
 ```bash
 sudo apt install python3-venv
-cd scripts/
+sudo usermod -aG dialout $USER
+sudo shutdown --reboot now
+cd /path/to/tab/python-examples/scripts/
 ./setup_dependencies.sh
 ```
 
