@@ -24,6 +24,12 @@ void init_clock(void);
 void init_led(void);
 void init_uart(void);
 
+// UART pin locations
+#define TXD GPIO21
+#define RXD GPIO22
+#define CTS GPIO23
+#define RTS GPIO24
+
 // Feature functions
 
 void rx_usart1(rx_cmd_buff_t* rx_cmd_buff_o);

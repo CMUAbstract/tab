@@ -12,6 +12,7 @@
 // libopencm3 library
 #include <libopencm3/nrf/51/clock.h>    // clock_set_xtal_freq
 #include <libopencm3/nrf/common/gpio.h> // gpio_mode_setup
+#include <libopencm3/nrf/common/uart.h> // uart functions
 
 // Board-specific header
 #include <com.h>                        // COM header
@@ -63,7 +64,18 @@ void init_led(void) {
 }
 
 void init_uart(void) {
-  // TODO
+  gpio_mode_setup(GPIO0,GPIO_MODE_INPUT,GPIO_PUPD_NONE,RXD|CTS);
+  gpio_mode_setup(GPIO0,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,TXD|RTS);
+
+  gpio_set(GPIO0,RTS|TXD);
+
+  uart_set_pins(UART0,RXD,TXD,CTS,RTS);
+  uart_set_baudrate(UART0,UART_BAUD_115200);
+  uart_set_parity(UART0,0);
+  uart_set_flow_control(UART0,0);
+  uart_enable(UART0);
+  
+  uart_start_rx(UART0);
 }
 
 // Feature functions
