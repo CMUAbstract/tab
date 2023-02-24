@@ -32,8 +32,8 @@ void init_uart(void);
 
 // Feature functions
 
-void rx_usart1(rx_cmd_buff_t* rx_cmd_buff_o);
+void rx_uart0(rx_cmd_buff_t* rx_cmd_buff_o);
 void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
-void tx_usart1(tx_cmd_buff_t* tx_cmd_buff_o);
+void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o);
 
 #endif

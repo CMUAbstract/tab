@@ -80,31 +80,41 @@ void init_uart(void) {
 
 // Feature functions
 
-void rx_usart1(rx_cmd_buff_t* rx_cmd_buff_o) {
-/*while(                                             // while
-   usart_get_flag(USART1,USART_ISR_RXNE) &&          //  USART1 RX not empty AND
-   rx_cmd_buff_o->state!=RX_CMD_BUFF_STATE_COMPLETE  //  Command not complete
-  ) {                                                //
-    uint8_t b = usart_recv(USART1);                  // Receive byte from RX pin
-    push_rx_cmd_buff(rx_cmd_buff_o, b);              // Push byte to buffer
-  }*/                                                  //
+void rx_uart0(rx_cmd_buff_t* rx_cmd_buff_o) {
+  while(                                              // while
+    UART_EVENT_RXDRDY(UART0) &&                       //  UART0 RX has byte AND
+    rx_cmd_buff_o->state!=RX_CMD_BUFF_STATE_COMPLETE  //  Command not complete
+    ) {                                               //
+    UART_EVENT_RXDRDY(UART0) = 0;                     // Reset RXDRDY event
+    uint8_t b = (uint8_t)uart_recv(UART0);            // Receive byte from RX pin
+    push_rx_cmd_buff(rx_cmd_buff_o, b);               // Push byte to buffer
+  }                                                   //
 }
 
 void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
-/*if(                                                  // if
+  if(                                                  // if
    rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE && // rx_cmd is valid AND
    tx_cmd_buff_o->empty                                // tx_cmd is empty
   ) {                                                  //
-    write_reply(rx_cmd_buff_o, tx_cmd_buff_o);         // execute cmd and reply
-  }*/                                                    //
+    write_reply(rx_cmd_buff_o, tx_cmd_buff_o);         // Execute cmd and reply
+    
+    uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);        // Pop 1st byte from TX buffer
+    uart_send(UART0,b);                                // Send 1st byte to TX pin to generate a TXDRDY event
+    uart_start_tx(UART0);                              // Start TX session
+  }
 }
 
-void tx_usart1(tx_cmd_buff_t* tx_cmd_buff_o) {
-/*while(                                             // while
-   usart_get_flag(USART1,USART_ISR_TXE) &&           //  USART1 TX empty AND
-   !(tx_cmd_buff_o->empty)                           //  TX buffer not empty
-  ) {                                                //
-    uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);      // Pop byte from TX buffer
-    usart_send(USART1,b);                            // Send byte to TX pin
-  }*/                                                  //
+void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o) {
+  while(                                                  // while
+    UART_EVENT_TXDRDY(UART0) &&                           //  UART0 TX empty AND
+    !(tx_cmd_buff_o->empty)                               //  TX buffer not empty
+  ) {                                                     //
+    UART_EVENT_TXDRDY(UART0) = 0;                         // Reset TXDRDY event
+    uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);           // Pop byte from TX buffer
+    uart_send(UART0,b);                                   // Send byte to TX pin
+  }                                                       //
+  if (UART_EVENT_TXDRDY(UART0) && tx_cmd_buff_o->empty) { // if UART0 transmitted AND TX buffer empty
+    UART_EVENT_TXDRDY(UART0) = 0;                         // Reset TXDRDY event
+    uart_stop_tx(UART0);                                  // Stop TX session
+  }
 }
