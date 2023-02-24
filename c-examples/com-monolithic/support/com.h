@@ -2,7 +2,7 @@
 // COM board support header file
 //
 // Written by Bradley Denby
-// Other contributors: Abhishek Anand, Chad Taylor
+// Other contributors: Abhishek Anand, Chad Taylor, Alexey Tatarinov
 //
 // See the top-level LICENSE file for the license.
 
@@ -11,6 +11,12 @@
 
 // TAB header
 #include <tab.h> // common_data_t, rx_cmd_buff_t, tx_cmd_buff_t
+
+// UART pin locations
+#define TXD GPIO21
+#define RXD GPIO22
+#define CTS GPIO23
+#define RTS GPIO24
 
 // Functions required by TAB
 
@@ -23,12 +29,6 @@ int bootloader_active(void);
 void init_clock(void);
 void init_led(void);
 void init_uart(void);
-
-// UART pin locations
-#define TXD GPIO21
-#define RXD GPIO22
-#define CTS GPIO23
-#define RTS GPIO24
 
 // Feature functions
 

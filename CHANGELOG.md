@@ -24,6 +24,7 @@ bottom of the file for a change log entry template.
 * Clock and LED initialization functions for the monolithic COM board example
 * Descriptions of the Bootloader Ack, Bootloader Nack, Bootloader Ping, and
   Bootloader Erase commands to the documentation file
+* Support for COM board UART using libopencm3 library
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
