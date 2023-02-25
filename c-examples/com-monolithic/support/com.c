@@ -39,14 +39,38 @@ int handle_common_data(common_data_t common_data_buff_i) {
   return strictly_increasing;
 }
 
-// This example implementation of handle_bootloader_erase erases all application
-// programs
+// This example implementation of handle_bootloader_erase erases the portion of
+// Flash accessible to bootloader_write_page
 int handle_bootloader_erase(void){
   // TODO
   return 0;
 }
 
-// This example implementation of bootloader_active always returns true
+// This example implementation of handle_bootloader_write_page writes 128 bytes 
+// of data to a region of memory indexed by the "page number" parameter (the
+// "sub-page ID").
+int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
+  // TODO
+  (void)rx_cmd_buff;
+  return 0;
+}
+
+// This example implementation of bootloader_write_page_addr32 writes 128 bytes
+// of data to a region of memory beginning at the start address
+int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff){
+  // TODO
+  (void)rx_cmd_buff;
+  return 0;
+}
+
+// This example implementation of handle_bootloader_jump returns 0 because the
+// com_monolithic example program does not allow execution of user applications
+int handle_bootloader_jump(void){
+  return 0;
+}
+
+// This example implementation of bootloader_active always returns 1 because the
+// com_monolithic example program does not allow execution of user applications
 int bootloader_active(void) {
   return 1;
 }
