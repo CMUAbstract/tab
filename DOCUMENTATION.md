@@ -129,7 +129,7 @@ indicating success.
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes      | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
 | ------------ | ------------ | -------------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
-| 0x22         | 0x69         | 0x06 OR 0x07 OR 0x0A | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x01   |
+| 0x22         | 0x69         | 0x06 OR 0x07 OR 0x0a | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x01   |
 
 **Payload**
 
@@ -141,9 +141,9 @@ Reason bytes:
 * Remaining Bytes: 0x07
   * Response to `booloader_ping`: 0x00 (PONG)
   * Response to `bootloader_erase`: 0x01 (ERASED)
-  * Response to `bootloader_jump`: 0xFF (JUMPED)
+  * Response to `bootloader_jump`: 0xff (JUMPED)
   * Response to `bootloader_write_page`: 0xHH (Page Number)
-* Remaining Bytes: 0x0A
+* Remaining Bytes: 0x0a
   * Response to `bootloader_write_page_addr32`: 0xHH 0xHH 0xHH 0xHH (Start
     Address)
 
@@ -162,7 +162,7 @@ indicating failure.
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
 | ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
-| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0F   |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0f   |
 
 **Payload**
 
@@ -205,7 +205,7 @@ This command instructs the bootloader to erase all applications.
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
 | ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
-| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0C   |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x0c   |
 
 **Payload**
 
