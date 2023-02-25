@@ -25,6 +25,7 @@ bottom of the file for a change log entry template.
 * Descriptions of the Bootloader Ack, Bootloader Nack, Bootloader Ping, and
   Bootloader Erase commands to the documentation file
 * Support for COM board UART using libopencm3 library
+* Bootloader Write Page, Bootloader Write Page Addr32, and Bootloader Jump
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file

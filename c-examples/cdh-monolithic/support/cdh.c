@@ -16,10 +16,10 @@
 #include <libopencm3/stm32/usart.h> // used in init_uart
 
 // Board-specific header
-#include <cdh.h>                    // Header file
+#include <cdh.h>                    // CDH header
 
 // TAB header
-#include <tab.h>                    // TAOLST protocol macros, typedefs, fnctns
+#include <tab.h>                    // TAB header
 
 // Functions required by TAB
 
@@ -40,16 +40,16 @@ int handle_common_data(common_data_t common_data_buff_i) {
   return strictly_increasing;
 }
 
-// This example implementation of handle_bootloader_erase erases all application
-// programs
+// This example implementation of handle_bootloader_erase erases the portion of
+// Flash accessible to bootloader_write_page
 int handle_bootloader_erase(void){
   flash_unlock();
   for(size_t subpage_id=0; subpage_id<255; subpage_id++) {
     // subpage_id==0x00 writes to APP_ADDR==0x08008000 i.e. start of page 16
     // So subpage_id==0x10 writes to addr 0x08008800 i.e. start of page 17 etc
     // Need to erase page once before writing inside of it
-    if((subpage_id*BYTES_PER_CMD)%BYTES_PER_PAGE==0) {
-      flash_erase_page(16+(subpage_id*BYTES_PER_CMD)/BYTES_PER_PAGE);
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      flash_erase_page(16+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE);
       flash_clear_status_flags();
     }
   }
@@ -57,7 +57,89 @@ int handle_bootloader_erase(void){
   return 1;
 }
 
-// This example implementation of bootloader_active always returns true
+// This example implementation of handle_bootloader_write_page writes 128 bytes 
+// of data to a region of memory indexed by the "page number" parameter (the
+// "sub-page ID").
+int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
+  if(
+   rx_cmd_buff->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   rx_cmd_buff->data[OPCODE_INDEX]==BOOTLOADER_WRITE_PAGE_OPCODE
+  ) {
+    flash_unlock();
+    uint32_t subpage_id = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX]);
+    // subpage_id==0x00 writes to APP_ADDR==0x08008000 i.e. start of page 16
+    // So subpage_id==0x10 writes to addr 0x08008800 i.e. start of page 17 etc
+    // Need to erase page once before writing inside of it
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      flash_erase_page(16+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE);
+      flash_clear_status_flags();
+    }
+    // write data
+    uint32_t start_addr = APP_ADDR+subpage_id*BYTES_PER_BLR_PLD;
+    for(size_t i=0; i<BYTES_PER_BLR_PLD; i+=8) {
+      uint64_t dword = *(uint64_t*)((rx_cmd_buff->data)+PLD_START_INDEX+1+i);
+      flash_wait_for_last_operation();
+      FLASH_CR |= FLASH_CR_PG;
+      MMIO32(i+start_addr)   = (uint32_t)(dword);
+      MMIO32(i+start_addr+4) = (uint32_t)(dword >> 32);
+      flash_wait_for_last_operation();
+      FLASH_CR &= ~FLASH_CR_PG;
+      flash_clear_status_flags();
+    }
+    flash_lock();
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+// This example implementation of bootloader_write_page_addr32 writes 128 bytes
+// of data to a region of memory beginning at the start address
+int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff){
+  if (
+   rx_cmd_buff->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   rx_cmd_buff->data[OPCODE_INDEX]==BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE
+  ) {
+    flash_unlock();
+    uint32_t addr_1 = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX]);
+    uint32_t addr_2 = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX+1]);
+    uint32_t addr_3 = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX+2]);
+    uint32_t addr_4 = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX+3]);
+    uint32_t start_addr = (addr_1<<24)|(addr_2<<16)|(addr_3<<8)|(addr_4<<0);
+    // write data
+    for(size_t i=0; i<BYTES_PER_BLR_PLD; i+=8) {
+      // APP_ADDR==0x08008000 corresponds to the start of Flash page 16, and
+      // 0x08008800 corresponds to the start of Flash page 17, etc.
+      // Need to erase page once before writing inside of it
+      // Check for every new dword since write_addr32 need not be page-aligned
+      if((i+start_addr)%BYTES_PER_FLASH_PAGE==0) {
+        flash_erase_page((i+start_addr)/BYTES_PER_FLASH_PAGE);
+        flash_clear_status_flags();
+      }
+      uint64_t dword = *(uint64_t*)((rx_cmd_buff->data)+PLD_START_INDEX+4+i);
+      flash_wait_for_last_operation();
+      FLASH_CR |= FLASH_CR_PG;
+      MMIO32(i+start_addr)   = (uint32_t)(dword);
+      MMIO32(i+start_addr+4) = (uint32_t)(dword >> 32);
+      flash_wait_for_last_operation();
+      FLASH_CR &= ~FLASH_CR_PG;
+      flash_clear_status_flags();
+    }
+    flash_lock();
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+// This example implementation of handle_bootloader_jump returns 0 because the
+// cdh_monolithic example program does not allow execution of user applications
+int handle_bootloader_jump(void){
+  return 0;
+}
+
+// This example implementation of bootloader_active always returns 1 because the
+// cdh_monolithic example program does not allow execution of user applications
 int bootloader_active(void) {
   return 1;
 }
