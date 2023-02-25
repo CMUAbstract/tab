@@ -6,8 +6,10 @@ TAB examples using the C implementation
 
 ```bash
 sudo apt install build-essential cmake gcc git libusb-1.0-0 libusb-1.0-0-dev
-cd scripts/
+cd /path/to/tab/c-examples/scripts/
 ./setup_dependencies.sh
+sudo cp ../utilities/stlink/config/udev/rules.d/*.rules /etc/udev/rules.d/
+sudo shutdown --reboot now
 ```
 
 ## Directory Contents
