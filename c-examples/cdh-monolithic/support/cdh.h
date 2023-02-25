@@ -12,11 +12,13 @@
 // TAB header
 #include <tab.h> // common_data_t, rx_cmd_buff_t, tx_cmd_buff_t
 
-//// Byte counts
-#define BYTES_PER_CMD  ((uint32_t)128)
-#define BYTES_PER_PAGE ((uint32_t)2048)
+// Macros
 
-//// Application start address
+//// Byte counts
+#define BYTES_PER_BLR_PLD    ((uint32_t)128)
+#define BYTES_PER_FLASH_PAGE ((uint32_t)2048)
+
+//// Start of application address space
 #define APP_ADDR   ((uint32_t)0x08008000U)
 
 //// SRAM1 start address
@@ -38,11 +40,6 @@ int bootloader_active(void);
 
 void init_clock(void);
 void init_uart(void);
-
-// Board jump functions
-
-int bl_check_app(void);
-void bl_jump_to_app(void);
 
 // Feature functions
 

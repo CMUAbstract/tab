@@ -37,7 +37,7 @@
 //// BOOTLOADER_ACK reasons
 #define BOOTLOADER_ACK_REASON_PONG   ((uint8_t)0x00)
 #define BOOTLOADER_ACK_REASON_ERASED ((uint8_t)0x01)
-#define BOOTLOADER_ACK_REASON_JUMP   ((uint8_t)0xff)
+#define BOOTLOADER_ACK_REASON_JUMPED   ((uint8_t)0xff)
 
 //// Route Nibble IDs
 #define GND ((uint8_t)0x00)

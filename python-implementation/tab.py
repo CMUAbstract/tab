@@ -52,11 +52,7 @@ PLD_START_INDEX    = 9
 ## TAB Command Enum Parameters
 BOOTLOADER_ACK_REASON_PONG   = 0x00
 BOOTLOADER_ACK_REASON_ERASED = 0x01
-BOOTLOADER_ACK_REASON_JUMP   = 0xff
-
-## Values for calculating app address
-START_ADDR = 0x8008000
-BYTES_PER_CMD = 128
+BOOTLOADER_ACK_REASON_JUMPED = 0xff
 
 ## Route nodes
 class Route(enum.Enum):
@@ -227,7 +223,8 @@ class TxCmdBuff:
       elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
-      elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE:
+      elif rx_cmd_buff.data[OPCODE_INDEX] == \
+       BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
       elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
@@ -242,7 +239,7 @@ def bootloader_ack_reason_to_str(bootloader_ack_reason):
     return 'pong'
   elif bootloader_ack_reason==BOOTLOADER_ACK_REASON_ERASED:
     return 'erased'
-  elif bootloader_ack_reason==BOOTLOADER_ACK_REASON_JUMP:
+  elif bootloader_ack_reason==BOOTLOADER_ACK_REASON_JUMPED:
     return 'jump'
   else:
     return '?'
@@ -294,10 +291,10 @@ def cmd_bytes_to_str(data):
       pld_str += ' reason:'+'0x{:02x}'.format(data[PLD_START_INDEX])+\
        '('+bootloader_ack_reason_to_str(data[PLD_START_INDEX])+')'
     if (data[MSG_LEN_INDEX] == 0x0a):
-      addr = ((data[PLD_START_INDEX]) << 24) + \
-                ((data[PLD_START_INDEX+1]) << 16) + \
-                ((data[PLD_START_INDEX+2]) << 8) + \
-                data[PLD_START_INDEX+3]
+      addr = (data[PLD_START_INDEX+0]<<24)| \
+             (data[PLD_START_INDEX+1]<<16)| \
+             (data[PLD_START_INDEX+2]<< 8)| \
+             (data[PLD_START_INDEX+3]<< 0)
       pld_str += ' reason:'+'0x{:08x}'.format(addr)+'(addr)'
   elif data[OPCODE_INDEX] == BOOTLOADER_NACK_OPCODE:
     cmd_str += 'bootloader_nack'
@@ -314,15 +311,15 @@ def cmd_bytes_to_str(data):
         pld_str += '{:02x}'.format(data[PLD_START_INDEX+1+i])
   elif data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE:
     cmd_str += 'bootloader_write_page_addr32'
-    addr = ((data[PLD_START_INDEX]) << 24) + \
-                ((data[PLD_START_INDEX+1]) << 16) + \
-                ((data[PLD_START_INDEX+2]) << 8) + \
-                data[PLD_START_INDEX+3]
+    addr = (data[PLD_START_INDEX+0]<<24)| \
+           (data[PLD_START_INDEX+1]<<16)| \
+           (data[PLD_START_INDEX+2]<< 8)| \
+           (data[PLD_START_INDEX+3]<< 0)
     pld_str += ' Address: 0x{:08x}'.format(addr)
     if data[MSG_LEN_INDEX] == 0x8a:
-        pld_str += ' hex_data:'
-        for i in range(0,data[MSG_LEN_INDEX]-0x07):
-            pld_str += '{:02x}'.format(data[PLD_START_INDEX+4+i])
+      pld_str += ' hex_data:'
+      for i in range(0,data[MSG_LEN_INDEX]-0x0a):
+        pld_str += '{:02x}'.format(data[PLD_START_INDEX+4+i])
   elif data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
     cmd_str += 'bootloader_jump'
   # string construction common to all commands
@@ -372,11 +369,14 @@ class TxCmd:
     elif self.data[OPCODE_INDEX] == BOOTLOADER_ERASE_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     elif self.data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_OPCODE:
-      self.data[MSG_LEN_INDEX]    = 0x07
+      self.data[MSG_LEN_INDEX] = 0x07
       self.data[PLD_START_INDEX] = 0x00
     elif self.data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE:
-      self.data[MSG_LEN_INDEX]    = 0x0a
-      self.data[PLD_START_INDEX] = 0x00
+      self.data[MSG_LEN_INDEX] = 0x0a
+      self.data[PLD_START_INDEX+0] = 0x00
+      self.data[PLD_START_INDEX+1] = 0x00
+      self.data[PLD_START_INDEX+2] = 0x00
+      self.data[PLD_START_INDEX+3] = 0x00
     elif self.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
     else:
@@ -406,11 +406,11 @@ class TxCmd:
   
   def bootloader_write_page_addr32(self, addr, page_data=[]):
     if self.data[OPCODE_INDEX] == BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE:
-      num = addr.to_bytes(4, byteorder='big')
-      self.data[PLD_START_INDEX] = num[0]
-      self.data[PLD_START_INDEX+1] = num[1]
-      self.data[PLD_START_INDEX+2] = num[2]
-      self.data[PLD_START_INDEX+3] = num[3]
+      addr_bytes = addr.to_bytes(4,byteorder='big')
+      self.data[PLD_START_INDEX]   = addr_bytes[0]
+      self.data[PLD_START_INDEX+1] = addr_bytes[1]
+      self.data[PLD_START_INDEX+2] = addr_bytes[2]
+      self.data[PLD_START_INDEX+3] = addr_bytes[3]
       if len(page_data)==128:
         self.data[MSG_LEN_INDEX] = 0x8a
         for i in range(0,len(page_data)):

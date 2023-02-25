@@ -14,17 +14,12 @@
 #include <libopencm3/stm32/gpio.h>  // used in init_gpio
 #include <libopencm3/stm32/rcc.h>   // used in init_clock, init_rtc
 #include <libopencm3/stm32/usart.h> // used in init_uart
-#include <libopencm3/cm3/scb.h>     // SCB_VTOR
 
 // Board-specific header
-#include <cdh.h>                    // Header file
+#include <cdh.h>                    // CDH header
 
 // TAB header
-#include <tab.h>                    // TAOLST protocol macros, typedefs, fnctns
-
-// Variables
-extern int in_bootloader;    // Used in bootloader main to indicate MCU state
-extern int app_jump_pending; // Used in bootloader main to signal jump to app
+#include <tab.h>                    // TAB header
 
 // Functions required by TAB
 
@@ -45,16 +40,16 @@ int handle_common_data(common_data_t common_data_buff_i) {
   return strictly_increasing;
 }
 
-// This example implementation of handle_bootloader_erase erases all application
-// programs
+// This example implementation of handle_bootloader_erase erases the portion of
+// Flash accessible to bootloader_write_page
 int handle_bootloader_erase(void){
   flash_unlock();
   for(size_t subpage_id=0; subpage_id<255; subpage_id++) {
     // subpage_id==0x00 writes to APP_ADDR==0x08008000 i.e. start of page 16
     // So subpage_id==0x10 writes to addr 0x08008800 i.e. start of page 17 etc
     // Need to erase page once before writing inside of it
-    if((subpage_id*BYTES_PER_CMD)%BYTES_PER_PAGE==0) {
-      flash_erase_page(16+(subpage_id*BYTES_PER_CMD)/BYTES_PER_PAGE);
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      flash_erase_page(16+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE);
       flash_clear_status_flags();
     }
   }
@@ -63,8 +58,8 @@ int handle_bootloader_erase(void){
 }
 
 // This example implementation of handle_bootloader_write_page writes 128 bytes 
-// of data to a section in memory beginning from APP_ADDR using the subpage_id
-// as the index
+// of data to a region of memory indexed by the "page number" parameter (the
+// "sub-page ID").
 int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
   if(
    rx_cmd_buff->state==RX_CMD_BUFF_STATE_COMPLETE &&
@@ -75,13 +70,13 @@ int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
     // subpage_id==0x00 writes to APP_ADDR==0x08008000 i.e. start of page 16
     // So subpage_id==0x10 writes to addr 0x08008800 i.e. start of page 17 etc
     // Need to erase page once before writing inside of it
-    if((subpage_id*BYTES_PER_CMD)%BYTES_PER_PAGE==0) {
-      flash_erase_page(16+(subpage_id*BYTES_PER_CMD)/BYTES_PER_PAGE);
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      flash_erase_page(16+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE);
       flash_clear_status_flags();
     }
     // write data
-    uint32_t start_addr = APP_ADDR+subpage_id*BYTES_PER_CMD;
-    for(size_t i=0; i<BYTES_PER_CMD; i+=8) {
+    uint32_t start_addr = APP_ADDR+subpage_id*BYTES_PER_BLR_PLD;
+    for(size_t i=0; i<BYTES_PER_BLR_PLD; i+=8) {
       uint64_t dword = *(uint64_t*)((rx_cmd_buff->data)+PLD_START_INDEX+1+i);
       flash_wait_for_last_operation();
       FLASH_CR |= FLASH_CR_PG;
@@ -98,8 +93,8 @@ int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
   }
 }
 
-// This example implementation of bootloader_write_page_addr32 writes 
-// 128 bytes to the address in memory provided in the command
+// This example implementation of bootloader_write_page_addr32 writes 128 bytes
+// of data to a region of memory beginning at the start address
 int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff){
   if (
    rx_cmd_buff->state==RX_CMD_BUFF_STATE_COMPLETE &&
@@ -110,17 +105,17 @@ int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff){
     uint32_t addr_2 = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX+1]);
     uint32_t addr_3 = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX+2]);
     uint32_t addr_4 = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX+3]);
-    uint32_t start_addr = (addr_1 << 24) + (addr_2 << 16) +
-                            (addr_3 << 8) + (addr_4);
-    // subpage_id==0x00 writes to APP_ADDR==0x08008000 i.e. start of page 16
-    // So subpage_id==0x10 writes to addr 0x08008800 i.e. start of page 17 etc
-    // Need to erase page once before writing inside of it
-    if((start_addr - APP_ADDR)%BYTES_PER_PAGE==0) {
-      flash_erase_page(16+(start_addr - APP_ADDR)/BYTES_PER_PAGE);
-      flash_clear_status_flags();
-    }
+    uint32_t start_addr = (addr_1<<24)|(addr_2<<16)|(addr_3<<8)|(addr_4<<0);
     // write data
-    for(size_t i=0; i<BYTES_PER_CMD; i+=8) {
+    for(size_t i=0; i<BYTES_PER_BLR_PLD; i+=8) {
+      // APP_ADDR==0x08008000 corresponds to the start of Flash page 16, and
+      // 0x08008800 corresponds to the start of Flash page 17, etc.
+      // Need to erase page once before writing inside of it
+      // Check for every new dword since write_addr32 need not be page-aligned
+      if((i+start_addr)%BYTES_PER_FLASH_PAGE==0) {
+        flash_erase_page((i+start_addr)/BYTES_PER_FLASH_PAGE);
+        flash_clear_status_flags();
+      }
       uint64_t dword = *(uint64_t*)((rx_cmd_buff->data)+PLD_START_INDEX+4+i);
       flash_wait_for_last_operation();
       FLASH_CR |= FLASH_CR_PG;
@@ -137,46 +132,16 @@ int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff){
   }
 }
 
-// This example implementation of bl_check_app checks whether the jump address
-// is valid or not
-int bl_check_app(void) {
-  // Does the first four bytes of the application represent the initialization
-  // location of a stack pointer within the boundaries of the RAM?
-  return (((*(uint32_t*)APP_ADDR)-SRAM1_BASE) <= SRAM1_SIZE);
-}
-
-// This example implementation of bl_jump_to_app jumps to a hardcoded
-// address in memory called APP_ADDR
-void bl_jump_to_app(void) {
-  // The first 4 bytes hold the stack address, so jump address is after that
-  uint32_t jump_addr =
-   *(volatile uint32_t*)(APP_ADDR+((uint32_t)0x00000004U));
-  // Create a jump() function
-  void (*jump)(void) = (void (*)(void))jump_addr;
-  // Set the vector table
-  SCB_VTOR = APP_ADDR;
-  // Set the master stack pointer
-  __asm__ volatile("msr msp, %0"::"g" (*(volatile uint32_t*)APP_ADDR));
-  // Jump to the application
-  jump();
-}
-
-// This example implementation of handle_bootloader_jump sets app_jump_pending
-// to 1 to trigger a jump after checking for a valid app address
+// This example implementation of handle_bootloader_jump returns 0 because the
+// cdh_monolithic example program does not allow execution of user applications
 int handle_bootloader_jump(void){
-  if (bl_check_app()) {
-    app_jump_pending = 1;
-    return 1;
-  } else {                  // Something wrong, abort jump
-    return 0;
-  }
-  
+  return 0;
 }
 
-// This example implementation of bootloader_active always returns whether the
-// board is in bootloader mode or not
+// This example implementation of bootloader_active always returns 1 because the
+// cdh_monolithic example program does not allow execution of user applications
 int bootloader_active(void) {
-  return in_bootloader;
+  return 1;
 }
 
 // Board initialization functions
