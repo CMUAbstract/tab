@@ -36,6 +36,7 @@ bottom of the file for a change log entry template.
 * Fixes CDH Common Data handler implementation
 * Adds additional details to documented C example dependencies
 * Adds additional details to documented Python example dependencies
+* LED initialization in the COM example
 
 ## <a name="0.0.0"></a> 0.0.0
 

@@ -32,7 +32,7 @@ int bootloader_active(void);
 // Board initialization functions
 
 void init_clock(void);
-void init_led(void);
+void init_leds(void);
 void init_uart(void);
 
 // Feature functions

@@ -82,9 +82,11 @@ void init_clock(void) {
   clock_start_hfclk(true);
 }
 
-void init_led(void) {
+void init_leds(void) {
   gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13);
   gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
+  gpio_set(GPIO0, GPIO13);
+  gpio_clear(GPIO0, GPIO12);
 }
 
 void init_uart(void) {
