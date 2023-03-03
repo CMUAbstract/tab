@@ -66,9 +66,33 @@ int handle_bootloader_erase(void){
 // of data to a region of memory indexed by the "page number" parameter (the
 // "sub-page ID").
 int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
-  // TODO
-  (void)rx_cmd_buff;
-  return 0;
+  if(
+   rx_cmd_buff->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   rx_cmd_buff->data[OPCODE_INDEX]==BOOTLOADER_WRITE_PAGE_OPCODE
+  ) {
+    // flash unlock
+    NVMC_CONFIG = WEN;
+    while(!NVMC_READY) {}
+    // bootloader_write_page
+    uint32_t subpage_id = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX]);
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      NVMC_ERASEPCR1 = 32+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE;
+      while(!NVMC_READY) {}
+    }
+    uint32_t start_addr = APP_ADDR+subpage_id*BYTES_PER_BLR_PLD;
+    for(size_t i=0; i<BYTES_PER_BLR_PLD; i+=4) {
+      uint32_t word = *(uint32_t*)((rx_cmd_buff->data)+PLD_START_INDEX+1+i);
+      MMIO32(i+start_addr) = word;
+      while(!NVMC_READY) {}
+    }
+    // flash lock
+    NVMC_CONFIG = REN;
+    while(!NVMC_READY) {}
+    // success
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 // This example implementation of bootloader_write_page_addr32 writes 128 bytes

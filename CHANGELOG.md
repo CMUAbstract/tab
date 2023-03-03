@@ -31,6 +31,7 @@ bottom of the file for a change log entry template.
 * Toggles CDH LEDs after tranmission of each complete TAB reply
 * Toggles COM LEDs after tranmission of each complete TAB reply
 * Bootloader Erase support in the COM example
+* Bootloader Write Page support in the COM example
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
