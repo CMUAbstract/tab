@@ -10,9 +10,10 @@
 #include <stdint.h>                     // uint8_t
 
 // libopencm3 library
-#include <libopencm3/nrf/51/clock.h>    // clock_set_xtal_freq
-#include <libopencm3/nrf/common/gpio.h> // gpio_mode_setup
-#include <libopencm3/nrf/common/uart.h> // uart functions
+#include <libopencm3/nrf/51/clock.h>         // clock_set_xtal_freq
+#include <libopencm3/nrf/common/gpio.h>      // gpio_mode_setup
+#include <libopencm3/nrf/common/uart.h>      // uart functions
+#include <libopencm3/nrf/common/memorymap.h> // nvmc base
 
 // Board-specific header
 #include <com.h>                        // COM header
@@ -42,8 +43,28 @@ int handle_common_data(common_data_t common_data_buff_i) {
 // This example implementation of handle_bootloader_erase erases the portion of
 // Flash accessible to bootloader_write_page
 int handle_bootloader_erase(void){
-  // TODO
-  return 0;
+  // Turn on flash erase enable and wait until the NVMC is ready:
+  NRF_NVMC->CONFIG = (NVMC_CONFIG_WEN_Een << NVMC_CONFIG_WEN_Pos);
+  while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+  {
+    // Do nothing.
+  }
+  for(size_t subpage_id=0; subpage_id<255; subpage_id++) {
+    uint32_t page_address = APP_ADDR+subpage_id*BYTES_PER_BLR_PLD;
+    // Erase page:
+    NRF_NVMC->ERASEPAGE = (uint32_t)page_address;
+    while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+    {
+      // Do nothing.
+    }
+  }
+  // Turn off flash erase enable and wait until the NVMC is ready:
+  NRF_NVMC->CONFIG = (NVMC_CONFIG_WEN_Ren << NVMC_CONFIG_WEN_Pos);
+  while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+  {
+    // Do nothing.
+  }
+  return 1;
 }
 
 // This example implementation of handle_bootloader_write_page writes 128 bytes 
@@ -51,8 +72,45 @@ int handle_bootloader_erase(void){
 // "sub-page ID").
 int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
   // TODO
-  (void)rx_cmd_buff;
-  return 0;
+  if(
+   rx_cmd_buff->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   rx_cmd_buff->data[OPCODE_INDEX]==BOOTLOADER_WRITE_PAGE_OPCODE
+  ) {
+    uint32_t subpage_id = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX]);
+    uint32_t page_address = APP_ADDR+subpage_id*BYTES_PER_BLR_PLD;
+    // Turn on flash write enable and wait until the NVMC is ready:
+    NRF_NVMC->CONFIG = (NVMC_CONFIG_WEN_Wen << NVMC_CONFIG_WEN_Pos);
+    while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+    {
+        // Do nothing.
+    }
+    for(size_t i=0; i<BYTES_PER_BLR_PLD; i+=8) {
+      uint64_t dword = *(uint64_t*)((rx_cmd_buff->data)+PLD_START_INDEX+1+i);
+      uint32_t *addr_write1 = (uint32_t*)i+page_address;
+      uint32_t *addr_write2 = (uint32_t*)i+page_address+4;
+      //Write to address
+      *addr_write1 = (uint32_t)(dword);
+      while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+      {
+          // Do nothing.
+      }
+      *addr_write2 = (uint32_t)(dword >> 32);
+      while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+      {
+          // Do nothing.
+      }
+    }
+    // Turn off flash write enable and wait until the NVMC is ready:
+    NRF_NVMC->CONFIG = (NVMC_CONFIG_WEN_Ren << NVMC_CONFIG_WEN_Pos);
+
+    while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+    {
+        // Do nothing.
+    }
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 // This example implementation of bootloader_write_page_addr32 writes 128 bytes
