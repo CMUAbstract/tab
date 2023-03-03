@@ -141,5 +141,7 @@ void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o) {
   ) {                                                //
     UART_EVENT_TXDRDY(UART0) = 0;                    // Reset TXDRDY event
     uart_stop_tx(UART0);                             // Stop TX session
+    gpio_toggle(GPIO0, GPIO13);                      //  Toggle LED
+    gpio_toggle(GPIO0, GPIO12);                      //  Toggle LED
   }                                                  //
 }

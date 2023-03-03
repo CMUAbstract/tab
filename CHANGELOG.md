@@ -29,6 +29,7 @@ bottom of the file for a change log entry template.
   support in the CDH example and skeleton functions in the COM example
 * Adds LED initialization to CDH example
 * Toggles CDH LEDs after tranmission of each complete TAB reply
+* Toggles COM LEDs after tranmission of each complete TAB reply
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
