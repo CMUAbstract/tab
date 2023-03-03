@@ -27,6 +27,7 @@ bottom of the file for a change log entry template.
 * Support for COM board UART using libopencm3 library
 * Bootloader Write Page, Bootloader Write Page Addr32, and Bootloader Jump
   support in the CDH example and skeleton functions in the COM example
+* Adds LED initialization to CDH example
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file

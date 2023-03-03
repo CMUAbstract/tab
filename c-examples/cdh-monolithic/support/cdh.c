@@ -2,7 +2,7 @@
 // CDH board support implementation file
 //
 // Written by Bradley Denby
-// Other contributors: Chad Taylor
+// Other contributors: Chad Taylor, Alok Anand
 //
 // See the top-level LICENSE file for the license.
 
@@ -172,6 +172,14 @@ void init_clock(void) {
   rcc_ahb_frequency = 80000000;
   rcc_apb1_frequency = 40000000;
   rcc_apb2_frequency = 80000000;
+}
+
+void init_leds(void) {
+  rcc_periph_clock_enable(RCC_GPIOC);
+  gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO10);
+  gpio_mode_setup(GPIOC, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
+  gpio_set(GPIOC, GPIO10);
+  gpio_clear(GPIOC, GPIO12);
 }
 
 void init_uart(void) {

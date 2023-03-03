@@ -2,7 +2,7 @@
 // CDH board support header file
 //
 // Written by Bradley Denby
-// Other contributors: Chad Taylor
+// Other contributors: Chad Taylor, Alok Anand
 //
 // See the top-level LICENSE file for the license.
 
@@ -39,6 +39,7 @@ int bootloader_active(void);
 // Board initialization functions
 
 void init_clock(void);
+void init_leds(void);
 void init_uart(void);
 
 // Feature functions

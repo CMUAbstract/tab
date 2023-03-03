@@ -2,7 +2,7 @@
 // TAB C Example CDH Monolithic
 //
 // Written by Bradley Denby
-// Other contributors: None
+// Other contributors: Alok Anand
 //
 // See the top-level LICENSE file for the license.
 
@@ -20,6 +20,7 @@
 int main(void) {
   // MCU initialization
   init_clock();
+  init_leds();
   init_uart();
   // TAB initialization
   rx_cmd_buff_t rx_cmd_buff = {.size=CMD_MAX_LEN};
