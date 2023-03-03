@@ -42,8 +42,24 @@ int handle_common_data(common_data_t common_data_buff_i) {
 // This example implementation of handle_bootloader_erase erases the portion of
 // Flash accessible to bootloader_write_page
 int handle_bootloader_erase(void){
-  // TODO
-  return 0;
+  // flash unlock
+  NVMC_CONFIG = EEN;
+  while(!NVMC_READY) {}
+  // bootloader_erase
+  for(size_t subpage_id=0; subpage_id<256; subpage_id++) {
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      uint32_t page_addr =
+       (32+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE)*
+       BYTES_PER_FLASH_PAGE;
+      NVMC_ERASEPCR1 = page_addr;
+      while(!NVMC_READY) {}
+    }
+  }
+  // flash lock
+  NVMC_CONFIG = REN;
+  while(!NVMC_READY) {}
+  // success
+  return 1;
 }
 
 // This example implementation of handle_bootloader_write_page writes 128 bytes 

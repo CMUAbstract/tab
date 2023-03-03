@@ -9,10 +9,26 @@
 #ifndef COM_H
 #define COM_H
 
+// libopencm3 library
+#include <libopencm3/nrf/common/memorymap.h> // NVMC_BASE
+
 // TAB header
 #include <tab.h> // common_data_t, rx_cmd_buff_t, tx_cmd_buff_t
 
 // Macros
+
+//// Byte counts
+#define BYTES_PER_BLR_PLD    ((uint32_t)128)
+#define BYTES_PER_FLASH_PAGE ((uint32_t)1024)
+
+//// Missing from libopencm3
+#define NVMC_READY     MMIO32(NVMC_BASE+0x400)
+#define NVMC_CONFIG    MMIO32(NVMC_BASE+0x504)
+#define NVMC_ERASEPCR1 MMIO32(NVMC_BASE+0x508)
+
+//// Aliases for NVMC CONFIG
+#define REN 0
+#define EEN 2
 
 //// Aliases for GPIO UART pins
 #define TXD GPIO21
