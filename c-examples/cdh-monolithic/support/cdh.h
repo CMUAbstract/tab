@@ -35,11 +35,14 @@ int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff);
 int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff);
 int handle_bootloader_jump(void);
 int bootloader_active(void);
+int handle_app_set_time(const uint32_t sec, const uint32_t ns);
+int handle_app_get_time(uint32_t* sec, uint32_t* ns);
 
 // Board initialization functions
 
 void init_clock(void);
 void init_uart(void);
+void init_rtc(void);
 
 // Feature functions
 

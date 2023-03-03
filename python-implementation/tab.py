@@ -8,7 +8,9 @@
 # See the top-level LICENSE file for the license.
 
 # import Python modules
-import enum # Enum
+import enum     # Enum
+import datetime # datetime
+import math     # floor
 
 # "constants"
 
@@ -30,6 +32,8 @@ BOOTLOADER_ERASE_OPCODE             = 0x0c
 BOOTLOADER_WRITE_PAGE_OPCODE        = 0x02
 BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE = 0x20
 BOOTLOADER_JUMP_OPCODE              = 0x0b
+APP_SET_TIME_OPCODE                 = 0x14
+APP_GET_TIME_OPCODE                 = 0x13
 
 ## Route Nibble IDs
 GND = 0x00
@@ -53,6 +57,12 @@ PLD_START_INDEX    = 9
 BOOTLOADER_ACK_REASON_PONG   = 0x00
 BOOTLOADER_ACK_REASON_ERASED = 0x01
 BOOTLOADER_ACK_REASON_JUMPED = 0xff
+
+## Space time epoch
+J2000 = datetime.datetime(\
+ 2000, 1, 1,11,58,55,816000,\
+ tzinfo=datetime.timezone.utc\
+)
 
 ## Route nodes
 class Route(enum.Enum):
@@ -230,6 +240,25 @@ class TxCmdBuff:
       elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == APP_GET_TIME_OPCODE:
+        td  = datetime.datetime.now(tz=datetime.timezone.utc) - J2000
+        sec = math.floor(td.total_seconds())
+        ns  = td.microseconds * 1000
+        sec_bytes = bytearray(sec.to_bytes(4,'little'))
+        ns_bytes  = bytearray( ns.to_bytes(4,"little"))
+        self.data[MSG_LEN_INDEX] = 0x0e
+        self.data[OPCODE_INDEX] = APP_SET_TIME_OPCODE
+        self.data[PLD_START_INDEX+0] = sec_bytes[0]
+        self.data[PLD_START_INDEX+1] = sec_bytes[1]
+        self.data[PLD_START_INDEX+2] = sec_bytes[2]
+        self.data[PLD_START_INDEX+3] = sec_bytes[3]
+        self.data[PLD_START_INDEX+4] =  ns_bytes[0]
+        self.data[PLD_START_INDEX+5] =  ns_bytes[1]
+        self.data[PLD_START_INDEX+6] =  ns_bytes[2]
+        self.data[PLD_START_INDEX+7] =  ns_bytes[3]
 
 # Helper functions
 
@@ -322,6 +351,23 @@ def cmd_bytes_to_str(data):
         pld_str += '{:02x}'.format(data[PLD_START_INDEX+4+i])
   elif data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
     cmd_str += 'bootloader_jump'
+  elif data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+    cmd_str += 'app_set_time'
+    pld_str += \
+     ' sec:' + str(\
+      data[PLD_START_INDEX+3]<<24 | \
+      data[PLD_START_INDEX+2]<<16 | \
+      data[PLD_START_INDEX+1]<< 8 | \
+      data[PLD_START_INDEX+0]<< 0   \
+     ) + \
+     ' ns:'  + str(\
+      data[PLD_START_INDEX+7]<<24 | \
+      data[PLD_START_INDEX+6]<<16 | \
+      data[PLD_START_INDEX+5]<< 8 | \
+      data[PLD_START_INDEX+4]<< 0   \
+     )
+  elif data[OPCODE_INDEX] == APP_GET_TIME_OPCODE:
+    cmd_str += 'app_get_time'
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -379,6 +425,18 @@ class TxCmd:
       self.data[PLD_START_INDEX+3] = 0x00
     elif self.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+      self.data[MSG_LEN_INDEX]      = 0x0e
+      self.data[PLD_START_INDEX+0] = 0x00
+      self.data[PLD_START_INDEX+1] = 0x00
+      self.data[PLD_START_INDEX+2] = 0x00
+      self.data[PLD_START_INDEX+3] = 0x00
+      self.data[PLD_START_INDEX+4] = 0x00
+      self.data[PLD_START_INDEX+5] = 0x00
+      self.data[PLD_START_INDEX+6] = 0x00
+      self.data[PLD_START_INDEX+7] = 0x00
+    elif self.data[OPCODE_INDEX] == APP_GET_TIME_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
     else:
       self.data[MSG_LEN_INDEX] = 0x06
 
@@ -415,6 +473,25 @@ class TxCmd:
         self.data[MSG_LEN_INDEX] = 0x8a
         for i in range(0,len(page_data)):
           self.data[PLD_START_INDEX+4+i] = page_data[i]
+  
+  def app_set_time(self, sec, ns):
+    if self.data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+      s0 = (sec >>  0) & 0xff # LSB
+      s1 = (sec >>  8) & 0xff
+      s2 = (sec >> 16) & 0xff
+      s3 = (sec >> 24) & 0xff # MSB
+      n0 = ( ns >>  0) & 0xff # LSB
+      n1 = ( ns >>  8) & 0xff
+      n2 = ( ns >> 16) & 0xff
+      n3 = ( ns >> 24) & 0xff # MSB
+      self.data[PLD_START_INDEX+0] = s0
+      self.data[PLD_START_INDEX+1] = s1
+      self.data[PLD_START_INDEX+2] = s2
+      self.data[PLD_START_INDEX+3] = s3
+      self.data[PLD_START_INDEX+4] = n0
+      self.data[PLD_START_INDEX+5] = n1
+      self.data[PLD_START_INDEX+6] = n2
+      self.data[PLD_START_INDEX+7] = n3
 
   def get_byte_count(self):
     return self.data[MSG_LEN_INDEX]+0x03

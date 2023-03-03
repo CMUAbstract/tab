@@ -33,6 +33,8 @@
 #define BOOTLOADER_WRITE_PAGE_OPCODE        ((uint8_t)0x02)
 #define BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE ((uint8_t)0x20)
 #define BOOTLOADER_JUMP_OPCODE              ((uint8_t)0x0b)
+#define APP_SET_TIME_OPCODE                 ((uint8_t)0x14)
+#define APP_GET_TIME_OPCODE                 ((uint8_t)0x13)
 
 //// BOOTLOADER_ACK reasons
 #define BOOTLOADER_ACK_REASON_PONG   ((uint8_t)0x00)
