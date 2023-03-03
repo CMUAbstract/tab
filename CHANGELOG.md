@@ -28,6 +28,7 @@ bottom of the file for a change log entry template.
 * Bootloader Write Page, Bootloader Write Page Addr32, and Bootloader Jump
   support in the CDH example and skeleton functions in the COM example
 * Adds LED initialization to CDH example
+* Toggles CDH LEDs after tranmission of each complete TAB reply
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file

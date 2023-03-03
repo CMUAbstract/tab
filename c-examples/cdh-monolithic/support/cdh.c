@@ -226,5 +226,9 @@ void tx_usart1(tx_cmd_buff_t* tx_cmd_buff_o) {
   ) {                                                //
     uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);      // Pop byte from TX buffer
     usart_send(USART1,b);                            // Send byte to TX pin
+    if(tx_cmd_buff_o->empty) {                       // if TX buffer empty
+      gpio_toggle(GPIOC, GPIO10);                    //  Toggle LED1
+      gpio_toggle(GPIOC, GPIO12);                    //  Toggle LED2
+    }                                                //
   }                                                  //
 }
