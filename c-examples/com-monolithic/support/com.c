@@ -42,17 +42,57 @@ int handle_common_data(common_data_t common_data_buff_i) {
 // This example implementation of handle_bootloader_erase erases the portion of
 // Flash accessible to bootloader_write_page
 int handle_bootloader_erase(void){
-  // TODO
-  return 0;
+  // flash unlock
+  NVMC_CONFIG = EEN;
+  while(!NVMC_READY) {}
+  // bootloader_erase
+  for(size_t subpage_id=0; subpage_id<256; subpage_id++) {
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      uint32_t page_addr =
+       (32+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE)*
+       BYTES_PER_FLASH_PAGE;
+      NVMC_ERASEPCR1 = page_addr;
+      while(!NVMC_READY) {}
+    }
+  }
+  // flash lock
+  NVMC_CONFIG = REN;
+  while(!NVMC_READY) {}
+  // success
+  return 1;
 }
 
 // This example implementation of handle_bootloader_write_page writes 128 bytes 
 // of data to a region of memory indexed by the "page number" parameter (the
 // "sub-page ID").
 int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff){
-  // TODO
-  (void)rx_cmd_buff;
-  return 0;
+  if(
+   rx_cmd_buff->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   rx_cmd_buff->data[OPCODE_INDEX]==BOOTLOADER_WRITE_PAGE_OPCODE
+  ) {
+    // flash unlock
+    NVMC_CONFIG = WEN;
+    while(!NVMC_READY) {}
+    // bootloader_write_page
+    uint32_t subpage_id = (uint32_t)(rx_cmd_buff->data[PLD_START_INDEX]);
+    if((subpage_id*BYTES_PER_BLR_PLD)%BYTES_PER_FLASH_PAGE==0) {
+      NVMC_ERASEPCR1 = 32+(subpage_id*BYTES_PER_BLR_PLD)/BYTES_PER_FLASH_PAGE;
+      while(!NVMC_READY) {}
+    }
+    uint32_t start_addr = APP_ADDR+subpage_id*BYTES_PER_BLR_PLD;
+    for(size_t i=0; i<BYTES_PER_BLR_PLD; i+=4) {
+      uint32_t word = *(uint32_t*)((rx_cmd_buff->data)+PLD_START_INDEX+1+i);
+      MMIO32(i+start_addr) = word;
+      while(!NVMC_READY) {}
+    }
+    // flash lock
+    NVMC_CONFIG = REN;
+    while(!NVMC_READY) {}
+    // success
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 // This example implementation of bootloader_write_page_addr32 writes 128 bytes
@@ -82,9 +122,11 @@ void init_clock(void) {
   clock_start_hfclk(true);
 }
 
-void init_led(void) {
+void init_leds(void) {
   gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13);
   gpio_mode_setup(GPIO0, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO12);
+  gpio_set(GPIO0, GPIO13);
+  gpio_clear(GPIO0, GPIO12);
 }
 
 void init_uart(void) {
@@ -139,5 +181,7 @@ void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o) {
   ) {                                                //
     UART_EVENT_TXDRDY(UART0) = 0;                    // Reset TXDRDY event
     uart_stop_tx(UART0);                             // Stop TX session
+    gpio_toggle(GPIO0, GPIO13);                      //  Toggle LED
+    gpio_toggle(GPIO0, GPIO12);                      //  Toggle LED
   }                                                  //
 }

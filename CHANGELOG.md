@@ -27,6 +27,11 @@ bottom of the file for a change log entry template.
 * Support for COM board UART using libopencm3 library
 * Bootloader Write Page, Bootloader Write Page Addr32, and Bootloader Jump
   support in the CDH example and skeleton functions in the COM example
+* Adds LED initialization to CDH example
+* Toggles CDH LEDs after tranmission of each complete TAB reply
+* Toggles COM LEDs after tranmission of each complete TAB reply
+* Bootloader Erase support in the COM example
+* Bootloader Write Page support in the COM example
 
 ### Fixed
 * Fixes Markdown table styling in the documentation file
@@ -34,6 +39,7 @@ bottom of the file for a change log entry template.
 * Fixes CDH Common Data handler implementation
 * Adds additional details to documented C example dependencies
 * Adds additional details to documented Python example dependencies
+* LED initialization in the COM example
 
 ## <a name="0.0.0"></a> 0.0.0
 
