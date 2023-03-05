@@ -19,7 +19,8 @@
 // Main
 int main(void) {
   // MCU initialization
-  init_clock();
+  init_clock_hse();
+  //init_clock();
   init_leds();
   init_uart();
   // TAB initialization
