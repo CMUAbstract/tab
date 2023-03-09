@@ -21,8 +21,8 @@ int main(void) {
   // MCU initialization
   init_clock_hse();
   //init_clock();
-  init_leds();
   init_uart();
+  init_leds();
   // TAB initialization
   rx_cmd_buff_t rx_cmd_buff = {.size=CMD_MAX_LEN};
   clear_rx_cmd_buff(&rx_cmd_buff);

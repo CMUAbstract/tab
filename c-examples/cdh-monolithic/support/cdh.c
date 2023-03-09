@@ -181,7 +181,10 @@ void init_clock_hse(void) {
   rcc_set_hpre(RCC_CFGR_HPRE_NODIV);        // AHB at 80 MHz (80 MHz max.)
   rcc_set_ppre1(RCC_CFGR_PPRE_DIV2);       // APB1 at 40 MHz (80 MHz max.)
   rcc_set_ppre2(RCC_CFGR_PPRE_NODIV);      // APB2 at 80 MHz (80 MHz max.)
-  rcc_osc_off(RCC_PLL);
+  
+  flash_set_ws(FLASH_ACR_LATENCY_4WS);      // RM0351: 4 WS for 80 MHz  
+  rcc_osc_off(RCC_HSE);
+  
   rcc_set_main_pll(                         // Setup 80 MHz clock
    RCC_PLLCFGR_PLLSRC_HSE,                  // PLL clock source
    4,                                       // PLL VCO division factor
@@ -194,7 +197,7 @@ void init_clock_hse(void) {
   rcc_wait_for_osc_ready(RCC_PLL);          // Wait until PLL is ready
   rcc_set_sysclk_source(RCC_CFGR_SW_PLL); 
   rcc_wait_for_sysclk_status(RCC_PLL);  
-  rcc_ahb_frequency = 160000000;
+  rcc_ahb_frequency = 80000000;
   rcc_apb1_frequency = 40000000;
   rcc_apb2_frequency = 80000000;
 }
