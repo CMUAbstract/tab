@@ -48,6 +48,7 @@ int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff);
 int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff);
 int handle_bootloader_jump(void);
 int bootloader_active(void);
+int handle_application_telemetry(common_data_t common_data_buff_i);
 
 // Board initialization functions
 

@@ -16,6 +16,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootloader Write Page](#bootloader-write-page)
   * [Bootloader Write Page Addr32](#bootloader-write-page-addr32)
   * [Bootloader Jump](#bootloader-jump)
+  * [Application Telemetry](#application-telemetry)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 

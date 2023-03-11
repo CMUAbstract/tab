@@ -115,6 +115,23 @@ int bootloader_active(void) {
   return 1;
 }
 
+// This example implementation of handle_application_telemetry checks whether the bytes
+// are greater than or equal to 0x7, i.e. each subsequent byte is strictly greater than
+// or equal to 0x7
+int handle_application_telemetry(common_data_t common_data_buff_i) {
+  int greater_equal_seven = 1;
+  uint8_t prev_byte = common_data_buff_i.data[0];
+  for(size_t i=1; i<common_data_buff_i.end_index; i++) {
+    if(prev_byte < 7) {
+      greater_equal_seven = 0;
+      i = common_data_buff_i.end_index;
+      break;
+    }
+    prev_byte = common_data_buff_i.data[i];
+  }
+  return greater_equal_seven;
+}
+
 // Board initialization functions
 
 void init_clock(void) {
