@@ -200,3 +200,64 @@ void init_radio(void) {
   radio_disable_whitening(); // TODO: check if needed
   radio_enable();
 }
+
+void radio_start(void);
+void radio_disable_txrx(void);
+
+void radio_start(void) {
+  PERIPH_TRIGGER_TASK(RADIO_TASK_START); 
+}
+
+void radio_disable_txrx(void) {
+  PERIPH_TRIGGER_TASK(RADIO_TASK_DISABLE); 
+}
+
+void radio_transmit(uint8_t* packet) {
+  switch (RADIO_STATE) {
+    case RADIO_STATE_DISABLED:
+      radio_enable_tx();
+      break;
+    case RADIO_STATE_TXRU:
+    case RADIO_STATE_TX:
+      break;
+    case RADIO_STATE_TXIDLE:
+      if (RADIO_EVENT_READY) {
+        RADIO_EVENT_READY = 0;
+        radio_set_packet_ptr((uint8_t*)packet);
+        radio_start();
+      }
+      if (RADIO_EVENT_END) {
+        RADIO_EVENT_END = 0;
+        radio_disable_txrx();
+      }
+      break;
+  }
+}
+
+void radio_receive(uint8_t* packet) {
+  switch (RADIO_STATE) {
+    case RADIO_STATE_DISABLED:
+      radio_enable_rx();
+      break;
+    case RADIO_STATE_RXRU:
+    case RADIO_STATE_RX:
+      break;
+    case RADIO_STATE_RXIDLE:
+      if (RADIO_EVENT_READY) {
+        RADIO_EVENT_READY = 0;
+        radio_set_packet_ptr((uint8_t*)packet);
+        radio_start();
+      }
+      if (RADIO_EVENT_END) {
+        RADIO_EVENT_END = 0;
+        radio_disable_txrx();
+        // uart_send(UART0, '0' + packet[1]);
+        // uart_start_tx(UART0);
+        // while (!UART_EVENT_TXDRDY(UART0));
+        // uart_stop_tx(UART0);
+        // UART_EVENT_TXDRDY(UART0) = 0;
+        // packet[1] = 0;
+      };
+      break;
+  }
+}

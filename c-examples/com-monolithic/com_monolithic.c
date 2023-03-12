@@ -28,11 +28,17 @@ int main(void) {
   clear_rx_cmd_buff(&rx_cmd_buff);
   tx_cmd_buff_t tx_cmd_buff = {.size=CMD_MAX_LEN};
   clear_tx_cmd_buff(&tx_cmd_buff);
+
+  struct {uint8_t lf; uint8_t payload;} tx_packet = {2, 3};
+  struct {uint8_t lf; uint8_t payload;} rx_packet;
+
   // TAB loop
   while(1) {
     rx_uart0(&rx_cmd_buff);            // Collect command bytes
     reply(&rx_cmd_buff, &tx_cmd_buff); // Command reply logic
     tx_uart0(&tx_cmd_buff);            // Send a response if any
+    // radio_transmit((uint8_t*)&tx_packet);
+    // radio_receive((uint8_t*)&rx_packet);
   }
   // Should never reach this point
   return 0;
