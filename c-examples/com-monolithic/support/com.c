@@ -10,9 +10,10 @@
 #include <stdint.h>                     // uint8_t
 
 // libopencm3 library
-#include <libopencm3/nrf/51/clock.h>    // clock_set_xtal_freq
-#include <libopencm3/nrf/common/gpio.h> // gpio_mode_setup
-#include <libopencm3/nrf/common/uart.h> // uart functions
+#include <libopencm3/nrf/51/clock.h> // clock_set_xtal_freq
+#include <libopencm3/nrf/51/gpio.h>  // gpio_mode_setup
+#include <libopencm3/nrf/51/uart.h>  // uart functions
+#include <libopencm3/nrf/51/radio.h> // radio functions
 
 // Board-specific header
 #include <com.h>                        // COM header
@@ -184,4 +185,18 @@ void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o) {
     gpio_toggle(GPIO0, GPIO13);                      //  Toggle LED
     gpio_toggle(GPIO0, GPIO12);                      //  Toggle LED
   }                                                  //
+}
+
+void init_radio(void) {
+  radio_set_mode(RADIO_MODE_NRF_250KBIT);
+  radio_set_txpower(RADIO_TXPOWER_POS_4DBM);
+  radio_set_frequency(0); 
+  radio_set_balen(4);
+  radio_set_maxlen(254);
+  radio_set_addr(0, 3, 1); 
+  radio_set_tx_address(0);
+  RADIO_RXADDRESSES = RADIO_TXADDRESSES_ADDR0;
+  radio_configure_packet(8, 0, 0); // Allocate 1 byte for packet length to simplify memory layout
+  radio_disable_whitening(); // TODO: check if needed
+  radio_enable();
 }

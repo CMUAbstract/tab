@@ -22,6 +22,7 @@ int main(void) {
   init_clock();
   init_leds();
   init_uart();
+  init_radio();
   // TAB initialization
   rx_cmd_buff_t rx_cmd_buff = {.size=CMD_MAX_LEN};
   clear_rx_cmd_buff(&rx_cmd_buff);

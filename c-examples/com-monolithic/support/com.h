@@ -54,6 +54,7 @@ int bootloader_active(void);
 void init_clock(void);
 void init_leds(void);
 void init_uart(void);
+void init_radio(void);
 
 // Feature functions
 
