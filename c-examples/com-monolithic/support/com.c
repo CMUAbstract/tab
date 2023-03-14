@@ -20,6 +20,9 @@
 // TAB header
 #include <tab.h>                        // TAB header
 
+// Variables
+int rtc_set = 0; // Boolean; Zero until RTC date and time have been set
+
 // Functions required by TAB
 
 // This example implementation of handle_common_data checks whether the bytes
@@ -103,6 +106,13 @@ int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff){
   return 0;
 }
 
+// This example implementation of handle_app_set_time sets the rtc of the board
+// using the seconds and nanoseconds provided in the payload
+int handle_app_set_time(const uint32_t sec, const uint32_t ns) {
+  // TODO
+  return 0;
+}
+
 // This example implementation of handle_bootloader_jump returns 0 because the
 // com_monolithic example program does not allow execution of user applications
 int handle_bootloader_jump(void){
@@ -116,6 +126,11 @@ int bootloader_active(void) {
 }
 
 // Board initialization functions
+
+void init_rtc(void) {
+  // TODO
+  rtc_set = 0;                       // RTC date and time has not yet been set
+}
 
 void init_clock(void) {
   clock_set_xtal_freq(CLOCK_XTAL_FREQ_16MHZ);

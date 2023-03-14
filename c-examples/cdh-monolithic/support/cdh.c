@@ -14,12 +14,17 @@
 #include <libopencm3/stm32/gpio.h>  // used in init_gpio
 #include <libopencm3/stm32/rcc.h>   // used in init_clock, init_rtc
 #include <libopencm3/stm32/usart.h> // used in init_uart
+#include <libopencm3/stm32/pwr.h>   // used in set_rtc
+#include <libopencm3/stm32/rtc.h>   // used in rtc functions
 
 // Board-specific header
 #include <cdh.h>                    // CDH header
 
 // TAB header
 #include <tab.h>                    // TAB header
+
+// Variables
+int rtc_set = 0; // Boolean; Zero until RTC date and time have been set
 
 // Functions required by TAB
 
@@ -138,6 +143,79 @@ int handle_bootloader_jump(void){
   return 0;
 }
 
+// This example implementation of handle_app_set_time sets the rtc of the board
+// using the seconds and nanoseconds provided in the payload
+int handle_app_set_time(const uint32_t sec, const uint32_t ns) {
+  // sec and ns represent time since J2000
+  //   J2000 UTC: 2000-01-01 11:58:55.816
+  // modify sec and ns to indicate time since 2000-01-01 11:58:56
+  //   this modification makes the later math simpler
+  uint32_t nanosecond  = ns;
+  uint32_t sec_rounded = sec;
+  if(nanosecond>=184000000) {
+    nanosecond -= 184000000;
+  } else {
+    nanosecond = 1000000000-(184000000-nanosecond);
+    if(sec==0) {
+      return 0; // refuse to handle this case
+    } else {
+      sec_rounded -= 1;
+    }
+  }
+  // sec_rounded represents seconds since 2000-01-01 11:58:56
+  //   J2000 Julian date: 2451545
+  // modify sec_rounded to indicate seconds since 2000-01-01 00:00:00
+  //   (Julian date ~2451544.5)
+  //   this modification makes the later math simpler
+  uint32_t sec_since_y2k = sec_rounded+43136;
+  // calculate whole days since Julian date ~2451544.5
+  int32_t day_since_y2k = (int32_t)(sec_since_y2k/86400);
+  // track the leftover seconds
+  uint32_t remaining_sec = sec_since_y2k%86400;
+  // calculate the Julian date omitting any remaining_sec
+  //   if day_since_y2k==0, jd should be 2451545 b/c remaining_sec<86400
+  int32_t jd = 2451545+day_since_y2k;
+  // convert jd into year, month, and day (see fliegel1968letters)
+  int32_t l = jd+68569;
+  int32_t n = 4*l/146097;
+  l = l-(146097*n+3)/4;
+  int32_t i = 4000*(l+1)/1461001;
+  l = l-1461*i/4+31;
+  int32_t j = 80*l/2447;
+  int32_t k = l-2447*j/80;
+  l = j/11;
+  j = j+2-12*l;
+  i = 100*(n-49)+i+l;
+  // convert into uint8_t forms expected by RTC
+  uint8_t year = (uint8_t)(i-2000);
+  uint8_t month = (uint8_t)(j);
+  uint8_t day = (uint8_t)(k);
+  // convert remaining_sec into hour, minute, second
+  uint8_t hour = (uint8_t)(remaining_sec/3600);
+  uint8_t minute = (uint8_t)((remaining_sec%3600)/60);
+  uint8_t second = (uint8_t)((remaining_sec%3600)%60);
+  // set the RTC
+  pwr_disable_backup_domain_write_protect();
+  rtc_unlock();
+  rtc_set_init_flag();
+  rtc_wait_for_init_ready();
+  if(!rtc_set) {
+    rtc_set_prescaler((uint32_t)249,(uint32_t)127);
+    rtc_enable_bypass_shadow_register();
+  }
+  rtc_calendar_set_year(year);
+  rtc_calendar_set_month(month);
+  rtc_calendar_set_day(day);
+  rtc_set_am_format();
+  rtc_time_set_time(hour,minute,second,1);
+  rtc_clear_init_flag();
+  rtc_lock();
+  pwr_enable_backup_domain_write_protect();
+  // record and return success
+  rtc_set = 1;
+  return rtc_set;
+}
+
 // This example implementation of bootloader_active always returns 1 because the
 // cdh_monolithic example program does not allow execution of user applications
 int bootloader_active(void) {
@@ -145,6 +223,18 @@ int bootloader_active(void) {
 }
 
 // Board initialization functions
+
+void init_rtc(void) {
+  rcc_osc_on(RCC_LSI);               // Low-speed internal oscillator
+  rcc_wait_for_osc_ready(RCC_LSI);   // Wait until oscillator is ready
+  rcc_periph_clock_enable(RCC_PWR);  // Enable power interface clock for the RTC
+  pwr_disable_backup_domain_write_protect();
+  rcc_set_rtc_clock_source(RCC_LSI); // Set RTC source
+  rcc_enable_rtc_clock();            // Enable RTC
+  rtc_wait_for_synchro();
+  pwr_enable_backup_domain_write_protect();
+  rtc_set = 0;                       // RTC date and time has not yet been set
+}
 
 void init_clock(void) {
   rcc_osc_on(RCC_HSI16);                    // 16 MHz internal RC oscillator

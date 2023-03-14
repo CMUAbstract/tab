@@ -8,7 +8,9 @@
 # See the top-level LICENSE file for the license.
 
 # import Python modules
-import enum # Enum
+import enum     # Enum
+import datetime # datetime
+import math     # floor
 
 # "constants"
 
@@ -30,6 +32,7 @@ BOOTLOADER_ERASE_OPCODE             = 0x0c
 BOOTLOADER_WRITE_PAGE_OPCODE        = 0x02
 BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE = 0x20
 BOOTLOADER_JUMP_OPCODE              = 0x0b
+APP_SET_TIME_OPCODE                 = 0x14
 
 ## Route Nibble IDs
 GND = 0x00
@@ -53,6 +56,12 @@ PLD_START_INDEX    = 9
 BOOTLOADER_ACK_REASON_PONG   = 0x00
 BOOTLOADER_ACK_REASON_ERASED = 0x01
 BOOTLOADER_ACK_REASON_JUMPED = 0xff
+
+## Space time epoch
+J2000 = datetime.datetime(\
+ 2000, 1, 1,11,58,55,816000,\
+ tzinfo=datetime.timezone.utc\
+)
 
 ## Route nodes
 class Route(enum.Enum):
@@ -230,6 +239,9 @@ class TxCmdBuff:
       elif rx_cmd_buff.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+        self.data[MSG_LEN_INDEX] = 0x06
+        self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
 
 # Helper functions
 
@@ -322,6 +334,21 @@ def cmd_bytes_to_str(data):
         pld_str += '{:02x}'.format(data[PLD_START_INDEX+4+i])
   elif data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
     cmd_str += 'bootloader_jump'
+  elif data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+    cmd_str += 'app_set_time'
+    pld_str += \
+     ' sec:' + str(\
+      data[PLD_START_INDEX+3]<<24 | \
+      data[PLD_START_INDEX+2]<<16 | \
+      data[PLD_START_INDEX+1]<< 8 | \
+      data[PLD_START_INDEX+0]<< 0   \
+     ) + \
+     ' ns:'  + str(\
+      data[PLD_START_INDEX+7]<<24 | \
+      data[PLD_START_INDEX+6]<<16 | \
+      data[PLD_START_INDEX+5]<< 8 | \
+      data[PLD_START_INDEX+4]<< 0   \
+     )
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -379,6 +406,16 @@ class TxCmd:
       self.data[PLD_START_INDEX+3] = 0x00
     elif self.data[OPCODE_INDEX] == BOOTLOADER_JUMP_OPCODE:
       self.data[MSG_LEN_INDEX] = 0x06
+    elif self.data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+      self.data[MSG_LEN_INDEX]      = 0x0e
+      self.data[PLD_START_INDEX+0] = 0x00
+      self.data[PLD_START_INDEX+1] = 0x00
+      self.data[PLD_START_INDEX+2] = 0x00
+      self.data[PLD_START_INDEX+3] = 0x00
+      self.data[PLD_START_INDEX+4] = 0x00
+      self.data[PLD_START_INDEX+5] = 0x00
+      self.data[PLD_START_INDEX+6] = 0x00
+      self.data[PLD_START_INDEX+7] = 0x00
     else:
       self.data[MSG_LEN_INDEX] = 0x06
 
