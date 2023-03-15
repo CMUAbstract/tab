@@ -453,6 +453,25 @@ class TxCmd:
         for i in range(0,len(page_data)):
           self.data[PLD_START_INDEX+4+i] = page_data[i]
 
+  def app_set_time(self, sec, ns):
+    if self.data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
+      s0 = (sec >>  0) & 0xff # LSB
+      s1 = (sec >>  8) & 0xff
+      s2 = (sec >> 16) & 0xff
+      s3 = (sec >> 24) & 0xff # MSB
+      n0 = ( ns >>  0) & 0xff # LSB
+      n1 = ( ns >>  8) & 0xff
+      n2 = ( ns >> 16) & 0xff
+      n3 = ( ns >> 24) & 0xff # MSB
+      self.data[PLD_START_INDEX+0] = s0
+      self.data[PLD_START_INDEX+1] = s1
+      self.data[PLD_START_INDEX+2] = s2
+      self.data[PLD_START_INDEX+3] = s3
+      self.data[PLD_START_INDEX+4] = n0
+      self.data[PLD_START_INDEX+5] = n1
+      self.data[PLD_START_INDEX+6] = n2
+      self.data[PLD_START_INDEX+7] = n3
+
   def get_byte_count(self):
     return self.data[MSG_LEN_INDEX]+0x03
 
