@@ -21,6 +21,7 @@ extern int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff);
 extern int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff);
 extern int handle_bootloader_jump(void);
 extern int handle_app_set_time(const uint32_t sec, const uint32_t ns);
+extern int handle_app_get_time(uint32_t* sec, uint32_t* ns);
 extern int bootloader_active(void);
 
 // Helper functions
@@ -296,6 +297,36 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
         if(success) {
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_ACK_OPCODE;
+        } else {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        }
+        break;
+      case APP_GET_TIME_OPCODE:
+        // initialize common variables to known values
+        sec     = 0;
+        ns      = 0;
+        success = 0;
+        success = handle_app_get_time(&sec, &ns);
+        if(success) {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x0e);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = APP_SET_TIME_OPCODE;
+          sec_0 = (sec >>  0) & 0xff; // LSB
+          sec_1 = (sec >>  8) & 0xff;
+          sec_2 = (sec >> 16) & 0xff;
+          sec_3 = (sec >> 24) & 0xff; // MSB
+          ns_0  = (ns  >>  0) & 0xff; // LSB
+          ns_1  = (ns  >>  8) & 0xff;
+          ns_2  = (ns  >> 16) & 0xff;
+          ns_3  = (ns  >> 24) & 0xff; // MSB
+          tx_cmd_buff_o->data[PLD_START_INDEX+0] = sec_0;
+          tx_cmd_buff_o->data[PLD_START_INDEX+1] = sec_1;
+          tx_cmd_buff_o->data[PLD_START_INDEX+2] = sec_2;
+          tx_cmd_buff_o->data[PLD_START_INDEX+3] = sec_3;
+          tx_cmd_buff_o->data[PLD_START_INDEX+4] =  ns_0;
+          tx_cmd_buff_o->data[PLD_START_INDEX+5] =  ns_1;
+          tx_cmd_buff_o->data[PLD_START_INDEX+6] =  ns_2;
+          tx_cmd_buff_o->data[PLD_START_INDEX+7] =  ns_3;
         } else {
           tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;

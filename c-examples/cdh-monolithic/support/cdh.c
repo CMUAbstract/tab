@@ -2,7 +2,7 @@
 // CDH board support implementation file
 //
 // Written by Bradley Denby
-// Other contributors: Chad Taylor, Alok Anand
+// Other contributors: Chad Taylor, Alok Anand, Shize Che
 //
 // See the top-level LICENSE file for the license.
 
@@ -213,6 +213,30 @@ int handle_app_set_time(const uint32_t sec, const uint32_t ns) {
   pwr_enable_backup_domain_write_protect();
   // record and return success
   rtc_set = 1;
+  return rtc_set;
+}
+
+// This example implementation of handle_app_get_time gets the current time from
+// the rtc of the MCU and converts it into seconds and nanoseconds
+int handle_app_get_time(uint32_t* sec, uint32_t* ns) {
+  if(rtc_set) {
+    // Read all values "atomically"
+    int32_t year = (int32_t)(((RTC_DR>>20)*10)+((RTC_DR>>16)&0xf)+2000);
+    int32_t month = (int32_t)((((RTC_DR>>12)&0x1)*10)+((RTC_DR>>8)&0xf));
+    int32_t day = (int32_t)((((RTC_DR>>4)&0x3)*10)+(RTC_DR&0xf));
+    int32_t hour = (int32_t)((((RTC_TR>>20)&0x3)*10)+((RTC_TR>>16)&0xf));
+    int32_t minute = (int32_t)((((RTC_TR>>12)&0x7)*10)+((RTC_TR>>8)&0xf));
+    int32_t second = (int32_t)((((RTC_TR>>4)&0x7)*10)+(RTC_TR&0xf));
+    // Calculate JD from year, month, day
+    int32_t jd =
+     day-32075+1461*(year+4800+(month-14)/12)/4
+     +367*(month-2-(month-14)/12*12)/12-3
+     *((year+4900+(month-14)/12)/100)/4;
+    // Convert into seconds since 2000-01-01 11:58:56
+    *sec = (uint32_t)(86400*(jd-2451545)+60*(60*hour+minute)+second-43136);
+    // Write nanoseconds
+    *ns = (uint32_t)(184000000);
+  }
   return rtc_set;
 }
 

@@ -298,3 +298,23 @@ cmd.clear()
 rx_cmd_buff.clear()
 msgid += 1
 time.sleep(1.0)
+
+#14. Periodic App Get Time with expected reply of App Set Time with 
+#    sec and nanosec payload 
+for i in range(0,4):
+  cmd = TxCmd(APP_GET_TIME_OPCODE, HWID, msgid, GND, CDH)
+  byte_i = 0
+  while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
+    if byte_i < cmd.get_byte_count():
+      serial_port.write(cmd.data[byte_i].to_bytes(1, byteorder='big'))
+      byte_i += 1
+    if serial_port.in_waiting>0:
+      bytes = serial_port.read(1)
+      for b in bytes:
+        rx_cmd_buff.append_byte(b)
+  print('txcmd: '+str(cmd))
+  print('reply: '+str(rx_cmd_buff)+'\n')
+  cmd.clear()
+  rx_cmd_buff.clear()
+  msgid += 1
+  time.sleep(1.0)

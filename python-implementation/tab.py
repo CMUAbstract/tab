@@ -33,6 +33,7 @@ BOOTLOADER_WRITE_PAGE_OPCODE        = 0x02
 BOOTLOADER_WRITE_PAGE_ADDR32_OPCODE = 0x20
 BOOTLOADER_JUMP_OPCODE              = 0x0b
 APP_SET_TIME_OPCODE                 = 0x14
+APP_GET_TIME_OPCODE                 = 0x13
 
 ## Route Nibble IDs
 GND = 0x00
@@ -242,6 +243,22 @@ class TxCmdBuff:
       elif rx_cmd_buff.data[OPCODE_INDEX] == APP_SET_TIME_OPCODE:
         self.data[MSG_LEN_INDEX] = 0x06
         self.data[OPCODE_INDEX] = COMMON_NACK_OPCODE
+      elif rx_cmd_buff.data[OPCODE_INDEX] == APP_GET_TIME_OPCODE:
+        td  = datetime.datetime.now(tz=datetime.timezone.utc) - J2000
+        sec = math.floor(td.total_seconds())
+        ns  = td.microseconds * 1000
+        sec_bytes = bytearray(sec.to_bytes(4,'little'))
+        ns_bytes  = bytearray( ns.to_bytes(4,"little"))
+        self.data[MSG_LEN_INDEX] = 0x0e
+        self.data[OPCODE_INDEX] = APP_SET_TIME_OPCODE
+        self.data[PLD_START_INDEX+0] = sec_bytes[0]
+        self.data[PLD_START_INDEX+1] = sec_bytes[1]
+        self.data[PLD_START_INDEX+2] = sec_bytes[2]
+        self.data[PLD_START_INDEX+3] = sec_bytes[3]
+        self.data[PLD_START_INDEX+4] =  ns_bytes[0]
+        self.data[PLD_START_INDEX+5] =  ns_bytes[1]
+        self.data[PLD_START_INDEX+6] =  ns_bytes[2]
+        self.data[PLD_START_INDEX+7] =  ns_bytes[3]
 
 # Helper functions
 
@@ -349,6 +366,8 @@ def cmd_bytes_to_str(data):
       data[PLD_START_INDEX+5]<< 8 | \
       data[PLD_START_INDEX+4]<< 0   \
      )
+  elif data[OPCODE_INDEX] == APP_GET_TIME_OPCODE:
+    cmd_str += 'app_get_time'
   # string construction common to all commands
   cmd_str += ' hw_id:0x{:04x}'.format(\
    (data[HWID_MSB_INDEX]<<8)|(data[HWID_LSB_INDEX]<<0)\
@@ -416,6 +435,8 @@ class TxCmd:
       self.data[PLD_START_INDEX+5] = 0x00
       self.data[PLD_START_INDEX+6] = 0x00
       self.data[PLD_START_INDEX+7] = 0x00
+    elif self.data[OPCODE_INDEX] == APP_GET_TIME_OPCODE:
+      self.data[MSG_LEN_INDEX] = 0x06
     else:
       self.data[MSG_LEN_INDEX] = 0x06
 

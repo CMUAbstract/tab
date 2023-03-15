@@ -113,6 +113,13 @@ int handle_app_set_time(const uint32_t sec, const uint32_t ns) {
   return 0;
 }
 
+// This example implementation of handle_app_get_time gets the current time from
+// the rtc of the MCU and converts it into seconds and nanoseconds
+int handle_app_get_time(uint32_t* sec, uint32_t* ns) {
+  // TODO
+  return 0;
+}
+
 // This example implementation of handle_bootloader_jump returns 0 because the
 // com_monolithic example program does not allow execution of user applications
 int handle_bootloader_jump(void){

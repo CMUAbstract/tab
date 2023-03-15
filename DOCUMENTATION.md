@@ -17,6 +17,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootloader Write Page Addr32](#bootloader-write-page-addr32)
   * [Bootloader Jump](#bootloader-jump)
   * [App Set Time](#app-set-time)
+  * [App Get Time](#app-get-time)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
@@ -325,6 +326,28 @@ with the seconds and nanoseconds provided in the payload using the rtc of the MC
 | Sec LSByte (Required) | Sec (Required) | Sec (Required) | Sec MSByte (Required) | Nsec LSByte (Required) | Nsec (Required) | Nsec (Required) | Nsec MSByte (Required) |
 | --------------------- | -------------- | -------------- | --------------------- | ---------------------- | --------------- | ---------- | ---------------------- |
 | 0xHH                  | 0xHH           | 0xHH           | 0xHH                  | 0xHH                   | 0xHH            | 0xHH       | 0xHH                   | 
+
+### <a name="app-get-time"></a> App Get Time
+
+The app get time command is an application specific command to receive the 
+current time on the board and is generally used after an app set time command.
+* Name: `app_get_time`
+* Required parameters: None
+* Optional parameters: None
+* Reply:
+  * If time set sucessfully:
+    `app_set_time` with Sec and Nanosec payload
+  * Otherwise: `common_nack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x13   |
+
+**Payload**
+
+No payload
 
 ## <a name="protocol"></a> Protocol
 
