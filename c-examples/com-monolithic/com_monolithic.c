@@ -29,16 +29,19 @@ int main(void) {
   tx_cmd_buff_t tx_cmd_buff = {.size=CMD_MAX_LEN};
   clear_tx_cmd_buff(&tx_cmd_buff);
 
-  struct {uint8_t lf; uint8_t payload;} tx_packet = {2, 3};
-  struct {uint8_t lf; uint8_t payload;} rx_packet;
+  uint8_t tx_packet[5] = {4, '3', '4', '\n', '\r'};
+  uint8_t rx_packet[5] = {};
 
   // TAB loop
   while(1) {
+    for(int i=0; i<1600000; i++) {
+      __asm__("nop");
+    }
     rx_uart0(&rx_cmd_buff);            // Collect command bytes
     reply(&rx_cmd_buff, &tx_cmd_buff); // Command reply logic
     tx_uart0(&tx_cmd_buff);            // Send a response if any
-    // radio_transmit((uint8_t*)&tx_packet);
-    // radio_receive((uint8_t*)&rx_packet);
+    radio_transmit(tx_packet);
+    // radio_receive(rx_packet);
   }
   // Should never reach this point
   return 0;

@@ -195,9 +195,9 @@ void init_radio(void) {
   radio_set_maxlen(254);
   radio_set_addr(0, 3, 1); 
   radio_set_tx_address(0);
-  RADIO_RXADDRESSES = RADIO_TXADDRESSES_ADDR0;
+  RADIO_RXADDRESSES = 1 << 0;
   radio_configure_packet(8, 0, 0); // Allocate 1 byte for packet length to simplify memory layout
-  radio_disable_whitening(); // TODO: check if needed
+  radio_enable_whitening();
   radio_enable();
 }
 
@@ -223,7 +223,7 @@ void radio_transmit(uint8_t* packet) {
     case RADIO_STATE_TXIDLE:
       if (RADIO_EVENT_READY) {
         RADIO_EVENT_READY = 0;
-        radio_set_packet_ptr((uint8_t*)packet);
+        radio_set_packet_ptr(packet);
         radio_start();
       }
       if (RADIO_EVENT_END) {
@@ -245,18 +245,23 @@ void radio_receive(uint8_t* packet) {
     case RADIO_STATE_RXIDLE:
       if (RADIO_EVENT_READY) {
         RADIO_EVENT_READY = 0;
-        radio_set_packet_ptr((uint8_t*)packet);
+        radio_set_packet_ptr(packet);
         radio_start();
       }
       if (RADIO_EVENT_END) {
         RADIO_EVENT_END = 0;
         radio_disable_txrx();
-        // uart_send(UART0, '0' + packet[1]);
-        // uart_start_tx(UART0);
-        // while (!UART_EVENT_TXDRDY(UART0));
-        // uart_stop_tx(UART0);
-        // UART_EVENT_TXDRDY(UART0) = 0;
-        // packet[1] = 0;
+        uart_send(UART0, packet[1]);
+        uart_start_tx(UART0);
+        for (int i = 2; i < packet[0] + 1; i++) {
+          while (!UART_EVENT_TXDRDY(UART0));
+          uart_send(UART0, packet[i]);
+          UART_EVENT_TXDRDY(UART0) = 0;
+        }
+        while (!UART_EVENT_TXDRDY(UART0));
+        uart_stop_tx(UART0);
+        UART_EVENT_TXDRDY(UART0) = 0;
+        packet[1] = 0;
       };
       break;
   }
