@@ -173,6 +173,22 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
           tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
         }
         break;
+      case APPLICATION_GET_TELEM:
+        // handle application get telem
+        for(i=PLD_START_INDEX; i<rx_cmd_buff_o->end_index; i++) {
+          common_data_buff.data[i-PLD_START_INDEX] = rx_cmd_buff_o->data[i];
+        }
+        common_data_buff.end_index = rx_cmd_buff_o->end_index-PLD_START_INDEX;
+        success = handle_common_data(common_data_buff);
+        // reply
+        if(success) {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_ACK_OPCODE;
+        } else {
+          tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
+          tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
+        }
+        break;  
       case BOOTLOADER_ACK_OPCODE:
         tx_cmd_buff_o->data[MSG_LEN_INDEX] = ((uint8_t)0x06);
         tx_cmd_buff_o->data[OPCODE_INDEX] = COMMON_NACK_OPCODE;
