@@ -302,7 +302,7 @@ application.
 
 No payload
 
-### <a name="application-telemetry"></a> Application-telemetry
+### <a name="application-telemetry"></a> Application Telemetry
 
 The aaplication telemetry acknowledgement command is exclusively used as a telemetry data reply
 indicating success.
