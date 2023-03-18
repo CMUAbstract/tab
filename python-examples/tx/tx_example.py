@@ -278,7 +278,7 @@ rx_cmd_buff.clear()
 msgid += 1
 time.sleep(1.0)
 
-#6. Test Bootloader Ack with expected reply of Common Nack
+#13. Test Application_Telem with expected reply of Common Nack
 cmd = TxCmd(APPLICATION_TELEM_OPCODE, HWID, msgid, GND, CDH)
 byte_i = 0
 while rx_cmd_buff.state != RxCmdBuffState.COMPLETE:
