@@ -16,6 +16,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootloader Write Page](#bootloader-write-page)
   * [Bootloader Write Page Addr32](#bootloader-write-page-addr32)
   * [Bootloader Jump](#bootloader-jump)
+  * [Application_Get_Telem](#application-get-telem)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
@@ -301,6 +302,32 @@ application.
 
 No payload
 
+### <a name="application-get-telem"></a> Appllcation Get Telemertry
+
+This command supports a variable-length byte payload useful for data transfer.
+* Name: `application_get_telem`
+* Required parameters: A sequence of one or more bytes
+* Optional parameters: None
+* Reply:
+  * If the byte payload handler is successful: `common_ack`
+  * Otherwise: `common_nack`
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | --------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0xHH            | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x06   |
+
+* Remaining Bytes must be greater than or equal to 0x07
+
+**Payload**
+
+| Byte(s) |
+| ------- |
+| 0xHH    |
+
+* Up to 249 bytes
+
 ## <a name="protocol"></a> Protocol
 
 TODO
@@ -308,6 +335,6 @@ TODO
 ## <a name="license"></a> License
 
 Written by Bradley Denby  
-Other contributors: Chad Taylor
+Other contributors: Chad Taylor, Abhishek Anand, Alok Anand
 
 See the top-level LICENSE file for the license.
