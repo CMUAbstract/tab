@@ -302,6 +302,28 @@ application.
 
 No payload
 
+### <a name="application-telemetry"></a> Application-telemetry
+
+The aaplication telemetry acknowledgement command is exclusively used as a telemetry data reply
+indicating success.
+* Name: `application_telem`
+* Required parameters: None
+* Optional parameters: Reason bytes
+* Reply: `common_nack`
+  * Because this command is used as a reply, sending this command generates a
+    common nack reply.
+
+**Header**
+
+| Start Byte 0 | Start Byte 1 | Remaining Bytes      | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
+| ------------ | ------------ | -------------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
+| 0x22         | 0x69         | 0x06                 | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x05   |
+
+**Payload**
+
+No payload
+
+
 ## <a name="protocol"></a> Protocol
 
 TODO
