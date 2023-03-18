@@ -21,7 +21,6 @@ extern int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff);
 extern int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff);
 extern int handle_bootloader_jump(void);
 extern int bootloader_active(void);
-extern int handle_application_telemetry(common_data_t common_data_buff_i);
 
 // Helper functions
 
