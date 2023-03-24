@@ -16,7 +16,7 @@ If you are interested in using and understanding TAB, refer to this document.
   * [Bootloader Write Page](#bootloader-write-page)
   * [Bootloader Write Page Addr32](#bootloader-write-page-addr32)
   * [Bootloader Jump](#bootloader-jump)
-  * [Application Telemetry](#application-telemetry)
+  * [Application Telem](#application-telem)
 * [Protocol](#protocol): TAB protocol
 * [License](#license)
 
@@ -302,7 +302,7 @@ application.
 
 No payload
 
-### <a name="application-telemetry"></a> Application Telem
+### <a name="application-telem"></a> Application Telem
 
 The aaplication telemetry acknowledgement command is exclusively used as a telemetry data reply
 indicating success.
