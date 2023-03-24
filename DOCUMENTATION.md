@@ -302,11 +302,11 @@ application.
 
 No payload
 
-### <a name="application-telemetry"></a> Application Telemetry
+### <a name="application-telemetry"></a> Application Telem
 
 The aaplication telemetry acknowledgement command is exclusively used as a telemetry data reply
 indicating success.
-* Name: `application_telem`
+* Name: `app_telem`
 * Required parameters: None
 * Optional parameters: Reason bytes
 * Reply: `common_nack`
@@ -317,7 +317,7 @@ indicating success.
 
 | Start Byte 0 | Start Byte 1 | Remaining Bytes      | HW ID LSByte | HW ID MSByte | MSG ID LSByte | MSG ID MSByte | Route Nibbles | Opcode |
 | ------------ | ------------ | -------------------- | ------------ | ------------ | ------------- | ------------- | ------------- | ------ |
-| 0x22         | 0x69         | 0x06                 | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x05   |
+| 0x22         | 0x69         | 0x06                 | 0xHH         | 0xHH         | 0xHH          | 0xHH          | 0xSD          | 0x18   |
 
 **Payload**
 
@@ -331,6 +331,6 @@ TODO
 ## <a name="license"></a> License
 
 Written by Bradley Denby  
-Other contributors: Chad Taylor
+Other contributors: Chad Taylor, Abhishek Anand
 
 See the top-level LICENSE file for the license.
