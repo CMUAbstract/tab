@@ -29,8 +29,15 @@ int main(void) {
   tx_cmd_buff_t tx_cmd_buff = {.size=CMD_MAX_LEN};
   clear_tx_cmd_buff(&tx_cmd_buff);
 
-  uint8_t tx_packet[5] = {4, '3', '4', '\n', '\r'};
-  uint8_t rx_packet[5] = {};
+  rx_cmd_buff_t radio_rx_cmd_buff = {.size=CMD_MAX_LEN};
+  clear_rx_cmd_buff(&radio_rx_cmd_buff);
+  tx_cmd_buff_t radio_tx_cmd_buff = {.size=CMD_MAX_LEN};
+  clear_tx_cmd_buff(&radio_tx_cmd_buff);
+
+  uint8_t tx_packet[9] = {8, 'a', 'l', 'e', 'x', 'e', 'y', '\n', '\r'};
+  uint8_t rx_packet[9] = {};
+
+  #define GROUND 1
 
   // TAB loop
   while(1) {
