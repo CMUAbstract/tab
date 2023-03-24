@@ -304,7 +304,7 @@ No payload
 
 ### <a name="application-telem"></a> Application Telem
 
-The aaplication telemetry acknowledgement command is exclusively used as a telemetry data reply
+The aaplication telem acknowledgement command is exclusively used as a telemetry data reply
 indicating success.
 * Name: `app_telem`
 * Required parameters: None
