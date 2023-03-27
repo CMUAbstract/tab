@@ -212,57 +212,121 @@ void radio_disable_txrx(void) {
   PERIPH_TRIGGER_TASK(RADIO_TASK_DISABLE); 
 }
 
-void radio_transmit(uint8_t* packet) {
-  switch (RADIO_STATE) {
-    case RADIO_STATE_DISABLED:
-      radio_enable_tx();
-      break;
-    case RADIO_STATE_TXRU:
-    case RADIO_STATE_TX:
-      break;
-    case RADIO_STATE_TXIDLE:
-      if (RADIO_EVENT_READY) {
-        RADIO_EVENT_READY = 0;
-        radio_set_packet_ptr(packet);
-        radio_start();
-      }
-      if (RADIO_EVENT_END) {
-        RADIO_EVENT_END = 0;
-        radio_disable_txrx();
-      }
-      break;
+void write_forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
+  if(
+   rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   tx_cmd_buff_o->empty
+  ) {
+    tx_cmd_buff_o->data[START_BYTE_0_INDEX] = START_BYTE_0;
+    tx_cmd_buff_o->data[START_BYTE_1_INDEX] = START_BYTE_1;
+    tx_cmd_buff_o->data[MSG_LEN_INDEX] = rx_cmd_buff_o->data[MSG_LEN_INDEX];
+    tx_cmd_buff_o->data[HWID_LSB_INDEX] = rx_cmd_buff_o->data[HWID_LSB_INDEX];
+    tx_cmd_buff_o->data[HWID_MSB_INDEX] = rx_cmd_buff_o->data[HWID_MSB_INDEX];
+    tx_cmd_buff_o->data[MSG_ID_LSB_INDEX] =
+     rx_cmd_buff_o->data[MSG_ID_LSB_INDEX];
+    tx_cmd_buff_o->data[MSG_ID_MSB_INDEX] =
+     rx_cmd_buff_o->data[MSG_ID_MSB_INDEX];
+    tx_cmd_buff_o->data[ROUTE_INDEX] =
+     rx_cmd_buff_o->data[ROUTE_INDEX];
+    tx_cmd_buff_o->data[OPCODE_INDEX] =
+     rx_cmd_buff_o->data[OPCODE_INDEX];
+
+    tx_cmd_buff_o->empty = 0;
+    tx_cmd_buff_o->start_index = 0;
+    tx_cmd_buff_o->end_index = PLD_START_INDEX;
+    for (int i = 0; i < rx_cmd_buff_o->data[MSG_LEN_INDEX] - 6; i++) {
+      tx_cmd_buff_o->data[PLD_START_INDEX + i] = rx_cmd_buff_o->data[PLD_START_INDEX + i];
+      tx_cmd_buff_o->end_index++;
+    }
+
+    clear_rx_cmd_buff(rx_cmd_buff_o);
   }
 }
 
-void radio_receive(uint8_t* packet) {
+void forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o, int use_uart) {
+  if(
+   rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   tx_cmd_buff_o->empty
+  ) {
+    write_forward(rx_cmd_buff_o, tx_cmd_buff_o);
+    if (use_uart) {
+      uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);        // Pop 1st TX buffer byte
+      uart_send(UART0,b);                                // Generate TXDRDY event
+      uart_start_tx(UART0);                              // Start TX session
+    }
+  }
+}
+
+void radio_transceive(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
+  static uint8_t packet[254];
   switch (RADIO_STATE) {
     case RADIO_STATE_DISABLED:
-      radio_enable_rx();
+      if (!tx_cmd_buff_o->empty) {
+        radio_enable_tx();
+      } else {
+        radio_enable_rx();
+      }
       break;
+    case RADIO_STATE_TXRU:
+    case RADIO_STATE_TX:
     case RADIO_STATE_RXRU:
+      break;
     case RADIO_STATE_RX:
+      if (!tx_cmd_buff_o->empty && !RADIO_EVENT_ADDRESS) {
+        radio_disable_txrx();
+      }
+      break;
+    case RADIO_STATE_TXIDLE:
+      if (RADIO_EVENT_END) {
+        RADIO_EVENT_ADDRESS = 0;
+        RADIO_EVENT_END = 0;
+        if (tx_cmd_buff_o->empty) {
+          gpio_toggle(GPIO0, GPIO12|GPIO13); // Match behaviour with tx_uart()
+          radio_disable_txrx();
+        } else {
+          packet[0] = 0;
+          for (int i = 1; i < 254 && !tx_cmd_buff_o->empty; i++) {
+            packet[i] = pop_tx_cmd_buff(tx_cmd_buff_o);
+            packet[0]++;
+          }
+          radio_set_packet_ptr(packet);
+          radio_start();
+        }
+      }
+      if (RADIO_EVENT_READY) {
+        RADIO_EVENT_READY = 0;
+        packet[0] = 0;
+        for (int i = 1; i < 254 && !tx_cmd_buff_o->empty; i++) {
+          packet[i] = pop_tx_cmd_buff(tx_cmd_buff_o);
+          packet[0]++;
+        }
+        radio_set_packet_ptr(packet);
+        radio_start();
+      }
       break;
     case RADIO_STATE_RXIDLE:
+      if (RADIO_EVENT_END) {
+        RADIO_EVENT_ADDRESS = 0;
+        RADIO_EVENT_END = 0;
+        for (int i = 1; i <= packet[0] && rx_cmd_buff_o->state != RX_CMD_BUFF_STATE_COMPLETE; i++) {
+          push_rx_cmd_buff(rx_cmd_buff_o, packet[i]);
+        }
+        if (rx_cmd_buff_o->state == RX_CMD_BUFF_STATE_COMPLETE) {
+          radio_disable_txrx();
+        } else {
+          radio_start();
+        }
+        break;
+      };
+      // Stop receiving if there is something to transmit and we aren't finishing a reception
+      if (!tx_cmd_buff_o->empty) {
+        radio_disable_txrx();
+      }
       if (RADIO_EVENT_READY) {
         RADIO_EVENT_READY = 0;
         radio_set_packet_ptr(packet);
         radio_start();
       }
-      if (RADIO_EVENT_END) {
-        RADIO_EVENT_END = 0;
-        radio_disable_txrx();
-        uart_send(UART0, packet[1]);
-        uart_start_tx(UART0);
-        for (int i = 2; i < packet[0] + 1; i++) {
-          while (!UART_EVENT_TXDRDY(UART0));
-          uart_send(UART0, packet[i]);
-          UART_EVENT_TXDRDY(UART0) = 0;
-        }
-        while (!UART_EVENT_TXDRDY(UART0));
-        uart_stop_tx(UART0);
-        UART_EVENT_TXDRDY(UART0) = 0;
-        packet[1] = 0;
-      };
       break;
   }
 }

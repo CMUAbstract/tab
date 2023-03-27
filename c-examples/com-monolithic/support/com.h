@@ -61,7 +61,8 @@ void init_radio(void);
 void rx_uart0(rx_cmd_buff_t* rx_cmd_buff_o);
 void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
 void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o);
-void radio_transmit(uint8_t* packet);
-void radio_receive(uint8_t* packet);
+void write_forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
+void forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o, int use_uart);
+void radio_transceive(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
 
 #endif

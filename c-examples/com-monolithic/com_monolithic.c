@@ -34,21 +34,13 @@ int main(void) {
   tx_cmd_buff_t radio_tx_cmd_buff = {.size=CMD_MAX_LEN};
   clear_tx_cmd_buff(&radio_tx_cmd_buff);
 
-  uint8_t tx_packet[9] = {8, 'a', 'l', 'e', 'x', 'e', 'y', '\n', '\r'};
-  uint8_t rx_packet[9] = {};
-
-  #define GROUND 1
-
   // TAB loop
   while(1) {
-    for(int i=0; i<1600000; i++) {
-      __asm__("nop");
-    }
     rx_uart0(&rx_cmd_buff);            // Collect command bytes
-    reply(&rx_cmd_buff, &tx_cmd_buff); // Command reply logic
-    tx_uart0(&tx_cmd_buff);            // Send a response if any
-    radio_transmit(tx_packet);
-    // radio_receive(rx_packet);
+    forward(&rx_cmd_buff, &radio_tx_cmd_buff, 0);
+    radio_transceive(&radio_rx_cmd_buff, &radio_tx_cmd_buff);
+    forward(&radio_rx_cmd_buff, &tx_cmd_buff, 1);
+    tx_uart0(&tx_cmd_buff);
   }
   // Should never reach this point
   return 0;
