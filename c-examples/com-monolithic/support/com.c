@@ -155,15 +155,18 @@ void rx_uart0(rx_cmd_buff_t* rx_cmd_buff_o) {
   }                                                  //
 }
 
-void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
+void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o, int use_uart) {
   if(                                                  // if
    rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE && // rx_cmd is valid AND
    tx_cmd_buff_o->empty                                // tx_cmd is empty
   ) {                                                  //
     write_reply(rx_cmd_buff_o, tx_cmd_buff_o);         // Execute cmd and reply
-    uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);        // Pop 1st TX buffer byte
-    uart_send(UART0,b);                                // Generate TXDRDY event
-    uart_start_tx(UART0);                              // Start TX session
+
+    if (use_uart) {
+      uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);        // Pop 1st TX buffer byte
+      uart_send(UART0,b);                                // Generate TXDRDY event
+      uart_start_tx(UART0);                              // Start TX session
+    }
   }                                                    //
 }
 
@@ -329,4 +332,36 @@ void radio_transceive(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o
       }
       break;
   }
+}
+
+#define GROUND
+
+void route(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* uart_tx_cmd_buff_o, tx_cmd_buff_t* radio_tx_cmd_buff_o) {
+  // Command route is src:dst, both are nibbles
+  int src = (rx_cmd_buff_o->data[ROUTE_INDEX] >> 4) & 0x0f;
+  int dst = (rx_cmd_buff_o->data[ROUTE_INDEX] >> 0) & 0x0f;
+
+  #ifdef GROUND
+    if (dst != GND) {
+      forward(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
+    } else {
+      forward(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
+    }
+  #else
+    switch (dst) {
+      case CDH:
+        forward(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
+        break;
+      case GND:
+        forward(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
+        break;
+      case COM:
+        if (src == CDH) {
+          reply(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
+        } else {
+          reply(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
+        }
+        break;
+    }
+  #endif
 }
