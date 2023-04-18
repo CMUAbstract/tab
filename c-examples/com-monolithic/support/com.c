@@ -335,7 +335,13 @@ void radio_transceive(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o
   }
 }
 
-#define GROUND
+// #define GROUND
+#define HWID 4783872
+
+uint16_t cmd_hwid(rx_cmd_buff_t* rx_cmd_buff_o) {
+  return (uint16_t)rx_cmd_buff_o->data[HWID_MSB_INDEX] << 8 + rx_cmd_buff_o->data[HWID_LSB_INDEX];
+}
+
 
 void route(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* uart_tx_cmd_buff_o, tx_cmd_buff_t* radio_tx_cmd_buff_o) {
   // Command route is src:dst, both are nibbles
@@ -343,25 +349,31 @@ void route(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* uart_tx_cmd_buff_o, tx_c
   int dst = (rx_cmd_buff_o->data[ROUTE_INDEX] >> 0) & 0x0f;
 
   #ifdef GROUND
-    if (dst != GND) {
-      forward(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
-    } else {
+    if (dst == GND) {
       forward(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
+    } else {
+      forward(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
     }
   #else
+    // Drop packets with a different HWID
+    if (HWID != cmd_hwid(rx_cmd_buff_o)) {
+      clear_rx_cmd_buff(rx_cmd_buff_o);
+      return;
+    }
+
     switch (dst) {
-      case CDH:
-        forward(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
-        break;
       case GND:
         forward(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
         break;
       case COM:
-        if (src == CDH) {
-          reply(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
-        } else {
+        if (src == GND) {
           reply(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
+        } else {
+          reply(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
         }
+        break;
+      default:
+        forward(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
         break;
     }
   #endif
