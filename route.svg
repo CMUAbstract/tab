@@ -1,0 +1,736 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="13.743981in"
+   height="15.047198in"
+   viewBox="0 0 349.09713 382.19885"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="route.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.48385753"
+     inkscape:cx="265.57404"
+     inkscape:cy="613.81705"
+     inkscape:window-width="1920"
+     inkscape:window-height="1012"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:object-paths="true"
+     inkscape:snap-intersection-paths="true"
+     inkscape:snap-smooth-nodes="false"
+     inkscape:snap-midpoints="false"
+     inkscape:bbox-nodes="false"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-page="true"
+     inkscape:snap-object-midpoints="false"
+     units="in"
+     inkscape:snap-global="true" />
+  <defs
+     id="defs2">
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lend"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path26712" />
+    </marker>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-28.627459,-79.213074)">
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect125430"
+       width="348.09714"
+       height="242.25281"
+       x="29.127459"
+       y="22.268032"
+       rx="10.000007"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="-57.73143"
+       y="179.05841"
+       id="text8277"
+       transform="rotate(-45)"><tspan
+         sodipodi:role="line"
+         id="tspan8275"
+         style="font-weight:bold;stroke-width:0.264583"
+         x="-57.73143"
+         y="179.05841">COM</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="259.88629"
+       y="95.906273"
+       id="text23515"><tspan
+         sodipodi:role="line"
+         id="tspan23513"
+         style="stroke-width:0.264583"
+         x="259.88629"
+         y="95.906273" /></text>
+    <g
+       id="g45752"
+       transform="translate(0,-79.375004)">
+      <rect
+         style="fill:#ff7f2a;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect42424"
+         width="33.814209"
+         height="25.789936"
+         x="45.371521"
+         y="105.17518"
+         rx="10.000007"
+         ry="10.000007" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="51.044205"
+         y="122.01563"
+         id="text24479"><tspan
+           sodipodi:role="line"
+           id="tspan24477"
+           style="stroke-width:0.264583"
+           x="51.044205"
+           y="122.01563">cmd</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 81.400963,181.04306 115.28737,147.15632"
+       id="path26707"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#abc837;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect42561"
+       width="30.674686"
+       height="74.173637"
+       x="46.94128"
+       y="173.76929"
+       rx="10.000007"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="51.873062"
+       y="214.80159"
+       id="text44963"><tspan
+         sodipodi:role="line"
+         id="tspan44961"
+         style="font-style:italic;font-weight:bold;stroke-width:0.264583"
+         x="51.873062"
+         y="214.80159">dst</tspan></text>
+    <path
+       style="fill:#ff7f2a;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow1Lend)"
+       d="m 63.199885,55.383987 -0.08822,32.026752"
+       id="path46168" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:40.4137;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="83.91082"
+       y="206.51176"
+       id="text47187"
+       transform="translate(5.2363668,-13.079266)"><tspan
+         x="83.91082"
+         y="206.51176"
+         id="tspan201372"><tspan
+   style="font-weight:bold"
+   id="tspan201368">CDH </tspan>or<tspan
+   style="font-weight:bold"
+   id="tspan201370"> </tspan></tspan><tspan
+         x="83.91082"
+         y="219.74089"
+         id="tspan201376"><tspan
+           style="font-weight:bold"
+           id="tspan201374">PLD</tspan></tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 84.437922,211.74003 47.922858,-2.4e-4"
+       id="path47189"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="97.164093"
+       y="236.84358"
+       id="text47193"><tspan
+         sodipodi:role="line"
+         id="tspan47191"
+         style="font-weight:bold;stroke-width:0.264583"
+         x="97.164093"
+         y="236.84358">GND</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 84.437916,243.36149 47.922854,-2.4e-4"
+       id="path47195"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#37abc8;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect50933"
+       width="147.95477"
+       height="24.446861"
+       x="140.09381"
+       y="199.51643"
+       rx="10.000006"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="149.54047"
+       y="215.06265"
+       id="text53369"><tspan
+         sodipodi:role="line"
+         id="tspan53367"
+         style="stroke-width:0.264583"
+         x="149.54047"
+         y="215.06265">forward to <tspan
+   style="font-weight:bold"
+   id="tspan85003">CDH</tspan> (UART1)</tspan></text>
+    <rect
+       style="fill:#37abc8;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect87145"
+       width="147.95477"
+       height="24.446861"
+       x="140.09381"
+       y="231.26646"
+       rx="10.000006"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="149.5818"
+       y="246.81268"
+       id="text55367"><tspan
+         sodipodi:role="line"
+         id="tspan55365"
+         style="stroke-width:0.264583"
+         x="149.5818"
+         y="246.81268">forward to <tspan
+   style="font-weight:bold"
+   id="tspan86607">GND</tspan> (RADIO)</tspan></text>
+    <rect
+       style="fill:#abc837;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect57545"
+       width="44.461376"
+       height="36.698898"
+       x="122.45177"
+       y="122.82222"
+       rx="10.000006"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:37.954;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="122.95088"
+       y="136.97762"
+       id="text57549"
+       transform="translate(6.8717722,1.5249734)"><tspan
+         x="122.95088"
+         y="136.97762"
+         id="tspan201380">is <tspan
+   style="font-style:italic;font-weight:bold"
+   id="tspan201378">src</tspan> </tspan><tspan
+         x="122.95088"
+         y="150.20674"
+         id="tspan201384"><tspan
+   style="font-weight:bold"
+   id="tspan201382">GND</tspan>?</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="186.91669"
+       y="122.17236"
+       id="text58713"><tspan
+         sodipodi:role="line"
+         id="tspan58711"
+         style="stroke-width:0.264583"
+         x="186.91669"
+         y="122.17236">true</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 172.70482,127.40062 47.92286,-2.4e-4"
+       id="path58715"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 172.70482,159.15064 47.92286,-2.4e-4"
+       id="path58721"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#8d5fd3;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect82143"
+       width="126.74136"
+       height="24.446861"
+       x="228.36072"
+       y="115.17709"
+       rx="10.000006"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="233.89532"
+       y="130.32022"
+       id="text58727"><tspan
+         sodipodi:role="line"
+         id="tspan58725"
+         style="stroke-width:0.264583"
+         x="233.89532"
+         y="130.32022">reply to <tspan
+   style="font-weight:bold"
+   id="tspan82437">GND</tspan> (RADIO)</tspan></text>
+    <rect
+       style="fill:#8d5fd3;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect58729"
+       width="126.74136"
+       height="24.446861"
+       x="228.36072"
+       y="146.92705"
+       rx="10.000006"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="233.85399"
+       y="162.07019"
+       id="text58733"><tspan
+         sodipodi:role="line"
+         id="tspan58731"
+         style="stroke-width:0.264583"
+         x="233.85399"
+         y="162.07019">reply to <tspan
+   style="font-weight:bold"
+   id="tspan83597">CDH</tspan> (UART1)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="185.20879"
+       y="153.92238"
+       id="text76323"><tspan
+         sodipodi:role="line"
+         id="tspan76321"
+         style="stroke-width:0.264583"
+         x="185.20879"
+         y="153.92238">false</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="150.54117"
+       y="40.392193"
+       id="text123062"><tspan
+         sodipodi:role="line"
+         id="tspan123060"
+         style="stroke-width:0.264583"
+         x="150.54117"
+         y="40.392193"><tspan
+   style="font-weight:bold"
+   id="tspan124570">COM</tspan> Board Routing</tspan></text>
+    <rect
+       style="fill:#ffffff;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect128954"
+       width="348.09714"
+       height="184.80775"
+       x="29.127459"
+       y="276.10416"
+       rx="10.000007"
+       ry="10.000007" />
+    <rect
+       style="fill:#abc837;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect159816"
+       width="30.674686"
+       height="74.173637"
+       x="47.817932"
+       y="370.90988"
+       rx="10.000007"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="-188.36903"
+       y="309.69598"
+       id="text128958"
+       transform="rotate(-45)"><tspan
+         sodipodi:role="line"
+         id="tspan128956"
+         style="font-weight:bold;stroke-width:0.264583"
+         x="-188.36903"
+         y="309.69598">CDH</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="259.88629"
+       y="281.71402"
+       id="text128962"><tspan
+         sodipodi:role="line"
+         id="tspan128960"
+         style="stroke-width:0.264583"
+         x="259.88629"
+         y="281.71402" /></text>
+    <g
+       id="g128970"
+       transform="translate(4.2761226e-7,196.39109)">
+      <rect
+         style="fill:#ff7f2a;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect128964"
+         width="33.814209"
+         height="25.789936"
+         x="45.371521"
+         y="105.17518"
+         rx="10.000007"
+         ry="10.000007" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="51.044205"
+         y="122.01563"
+         id="text128968"><tspan
+           sodipodi:role="line"
+           id="tspan128966"
+           style="stroke-width:0.264583"
+           x="51.044205"
+           y="122.01563">cmd</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="M 81.400963,365.79241 115.28737,331.90567"
+       id="path128972"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:45.4342;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="51.873062"
+       y="411.19266"
+       id="text128978"
+       transform="translate(0.87666784,0.74952586)"><tspan
+         x="51.873062"
+         y="411.19266"
+         id="tspan201388"><tspan
+           style="font-style:italic;font-weight:bold"
+           id="tspan201386">dst</tspan></tspan></text>
+    <path
+       style="fill:#ff7f2a;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow1Lend)"
+       d="m 63.199885,331.1501 -0.08822,32.02677"
+       id="path128980" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="97.164101"
+       y="401.61343"
+       id="text128984"><tspan
+         sodipodi:role="line"
+         id="tspan128982"
+         style="font-weight:bold;stroke-width:0.264583"
+         x="97.164101"
+         y="401.61343" /></text>
+    <g
+       id="g193573"
+       transform="translate(0,-37.041668)">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:42.8417;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="101.99431"
+         y="431.09125"
+         id="text128990"
+         transform="translate(-13.944337,-14.334871)"><tspan
+           x="101.99431"
+           y="431.09125"
+           id="tspan201394"><tspan
+   style="font-weight:bold"
+   id="tspan201390">COM </tspan>or<tspan
+   style="font-weight:bold"
+   id="tspan201392"> </tspan></tspan><tspan
+           x="101.99431"
+           y="444.32037"
+           id="tspan201398"><tspan
+             style="font-weight:bold"
+             id="tspan201396">GND</tspan></tspan></text>
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 84.284288,435.21377 47.922872,-2.4e-4"
+         id="path128992"
+         sodipodi:nodetypes="cc" />
+      <rect
+         style="fill:#37abc8;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect129002"
+         width="147.95477"
+         height="24.446861"
+         x="139.9402"
+         y="422.99017"
+         rx="10.000006"
+         ry="10.000007" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="149.42819"
+         y="438.53641"
+         id="text129008"><tspan
+           sodipodi:role="line"
+           id="tspan129006"
+           style="stroke-width:0.264583"
+           x="149.42819"
+           y="438.53641">forward to <tspan
+   style="font-weight:bold"
+   id="tspan163519">COM</tspan> (USART1)</tspan></text>
+    </g>
+    <rect
+       style="fill:#abc837;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect129010"
+       width="56.755165"
+       height="49.928085"
+       x="122.45177"
+       y="305.56888"
+       rx="10.000007"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:46.2713;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="122.95088"
+       y="136.97762"
+       id="text129018"
+       transform="translate(6.8717863,184.27162)"><tspan
+         x="122.95088"
+         y="136.97762"
+         id="tspan201402">is <tspan
+   style="font-style:italic;font-weight:bold"
+   id="tspan201400">src</tspan> </tspan><tspan
+         x="122.95088"
+         y="150.20674"
+         id="tspan201406"><tspan
+   style="font-weight:bold"
+   id="tspan201404">COM</tspan> or </tspan><tspan
+         x="122.95088"
+         y="163.43587"
+         id="tspan201410"><tspan
+   style="font-weight:bold"
+   id="tspan201408">GND</tspan>?</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="150.54117"
+       y="294.2283"
+       id="text129052"><tspan
+         sodipodi:role="line"
+         id="tspan129050"
+         style="stroke-width:0.264583"
+         x="150.54117"
+         y="294.2283"><tspan
+   style="font-weight:bold"
+   id="tspan129048">CDH</tspan> Board Routing</tspan></text>
+    <g
+       id="g193582"
+       transform="translate(0,42.333335)">
+      <path
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+         d="m 83.784286,386.71157 47.922894,-2.4e-4"
+         id="path128986"
+         sodipodi:nodetypes="cc" />
+      <rect
+         style="fill:#37abc8;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+         id="rect128994"
+         width="147.95477"
+         height="24.446861"
+         x="139.44012"
+         y="374.48798"
+         rx="10.000006"
+         ry="10.000007" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="148.88678"
+         y="390.03421"
+         id="text129000"><tspan
+           sodipodi:role="line"
+           id="tspan128998"
+           style="stroke-width:0.264583"
+           x="148.88678"
+           y="390.03421">forward to <tspan
+   style="font-weight:bold"
+   id="tspan166649">PLD</tspan> (LP UART)</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;white-space:pre;inline-size:42.8417;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="101.99431"
+         y="431.09125"
+         id="text169905"
+         transform="translate(-5.1296794,-49.458082)"><tspan
+           x="101.99431"
+           y="431.09125"
+           id="tspan201414"><tspan
+             style="font-weight:bold"
+             id="tspan201412">PLD</tspan></tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="198.65735"
+       y="309.29883"
+       id="text129022"><tspan
+         sodipodi:role="line"
+         id="tspan129020"
+         style="stroke-width:0.264583"
+         x="198.65735"
+         y="309.29883">true</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 184.44548,314.52709 47.92286,-2.4e-4"
+       id="path129024"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 184.44548,346.27711 47.92286,-2.4e-4"
+       id="path129026"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="fill:#8d5fd3;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect129028"
+       width="134.14967"
+       height="24.446861"
+       x="240.10138"
+       y="302.30356"
+       rx="10.000006"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="244.89856"
+       y="317.44669"
+       id="text129034"><tspan
+         sodipodi:role="line"
+         id="tspan129032"
+         style="stroke-width:0.264583"
+         x="244.89856"
+         y="317.44669">reply to <tspan
+   style="font-weight:bold"
+   id="tspan188811">COM</tspan> (USART1)</tspan></text>
+    <rect
+       style="fill:#8d5fd3;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect191163"
+       width="134.14967"
+       height="24.446861"
+       x="240.10138"
+       y="334.0535"
+       rx="10.000006"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="245.90625"
+       y="349.19662"
+       id="text129042"><tspan
+         sodipodi:role="line"
+         id="tspan129040"
+         style="stroke-width:0.264583"
+         x="245.90625"
+         y="349.19662">reply to <tspan
+   style="font-weight:bold"
+   id="tspan186679">PLD</tspan> (LP UART)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="196.94945"
+       y="341.04883"
+       id="text129046"><tspan
+         sodipodi:role="line"
+         id="tspan129044"
+         style="stroke-width:0.264583"
+         x="196.94945"
+         y="341.04883">false</tspan></text>
+    <rect
+       style="fill:#abc837;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect193745"
+       width="30.674686"
+       height="23.904169"
+       x="47.817932"
+       y="95.143761"
+       rx="10.000007"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="48.094227"
+       y="111.04133"
+       id="text196015"><tspan
+         sodipodi:role="line"
+         id="tspan196013"
+         style="font-style:italic;font-weight:bold;stroke-width:0.264583"
+         x="48.094227"
+         y="111.04133">hwid</tspan></text>
+    <path
+       style="fill:#ff7f2a;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow1Lend)"
+       d="m 63.199884,125.10166 -0.08822,40.75276"
+       id="path196913" />
+    <path
+       style="fill:#ff7f2a;stroke:#000000;stroke-width:0.999999;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow1Lend)"
+       d="M 85.618897,107.93334 131.21921,82.011931"
+       id="path196915"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="64.536163"
+       y="134.22043"
+       id="text199536"><tspan
+         sodipodi:role="line"
+         id="tspan199534"
+         style="stroke-width:0.264583"
+         x="64.536163"
+         y="134.22043">match</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="22.807219"
+       y="128.87358"
+       id="text199868"
+       transform="rotate(-30)"><tspan
+         sodipodi:role="line"
+         id="tspan199866"
+         style="stroke-width:0.264583"
+         x="22.807219"
+         y="128.87358">different</tspan></text>
+    <rect
+       style="fill:#ffdd55;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect200102"
+       width="72.555992"
+       height="34.587067"
+       x="139.02551"
+       y="64.209854"
+       rx="10.000007"
+       ry="10.000007" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:10.5833px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="150.3723"
+       y="84.423096"
+       id="text200692"><tspan
+         sodipodi:role="line"
+         id="tspan200690"
+         style="stroke-width:0.264583"
+         x="150.3723"
+         y="84.423096">drop cmd</tspan></text>
+  </g>
+</svg>
