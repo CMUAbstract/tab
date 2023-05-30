@@ -273,6 +273,37 @@ void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
   }
 }
 
+void write_forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
+  if(
+   rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE &&
+   tx_cmd_buff_o->empty
+  ) {
+    tx_cmd_buff_o->data[START_BYTE_0_INDEX] = START_BYTE_0;
+    tx_cmd_buff_o->data[START_BYTE_1_INDEX] = START_BYTE_1;
+    tx_cmd_buff_o->data[MSG_LEN_INDEX] = rx_cmd_buff_o->data[MSG_LEN_INDEX];
+    tx_cmd_buff_o->data[HWID_LSB_INDEX] = rx_cmd_buff_o->data[HWID_LSB_INDEX];
+    tx_cmd_buff_o->data[HWID_MSB_INDEX] = rx_cmd_buff_o->data[HWID_MSB_INDEX];
+    tx_cmd_buff_o->data[MSG_ID_LSB_INDEX] =
+     rx_cmd_buff_o->data[MSG_ID_LSB_INDEX];
+    tx_cmd_buff_o->data[MSG_ID_MSB_INDEX] =
+     rx_cmd_buff_o->data[MSG_ID_MSB_INDEX];
+    tx_cmd_buff_o->data[ROUTE_INDEX] =
+     rx_cmd_buff_o->data[ROUTE_INDEX];
+    tx_cmd_buff_o->data[OPCODE_INDEX] =
+     rx_cmd_buff_o->data[OPCODE_INDEX];
+
+    tx_cmd_buff_o->empty = 0;
+    tx_cmd_buff_o->start_index = 0;
+    tx_cmd_buff_o->end_index = PLD_START_INDEX;
+    for (int i = 0; i < rx_cmd_buff_o->data[MSG_LEN_INDEX] - 6; i++) {
+      tx_cmd_buff_o->data[PLD_START_INDEX + i] = rx_cmd_buff_o->data[PLD_START_INDEX + i];
+      tx_cmd_buff_o->end_index++;
+    }
+
+    clear_rx_cmd_buff(rx_cmd_buff_o);
+  }
+}
+
 //// Attempts to pop byte from beginning of tx_cmd_buff
 uint8_t pop_tx_cmd_buff(tx_cmd_buff_t* tx_cmd_buff_o) {
   uint8_t b = 0;

@@ -117,7 +117,13 @@ void push_rx_cmd_buff(rx_cmd_buff_t* rx_cmd_buff_o, uint8_t b);
 //// Attempts to clear rx_cmd_buff and populate tx_cmd_buff with reply
 void write_reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
 
+//// Attempts to clear rx_cmd_buff and populate tx_cmd_buff with forward
+void write_forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
+
 //// Attempts to pop byte from beginning of tx_cmd_buff
 uint8_t pop_tx_cmd_buff(tx_cmd_buff_t* tx_cmd_buff_o);
+
+
+uint16_t get_cmd_hwid(const rx_cmd_buff_t* const rx_cmd_buff_o);
 
 #endif
