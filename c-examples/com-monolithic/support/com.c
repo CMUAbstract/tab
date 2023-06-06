@@ -155,22 +155,15 @@ void rx_uart0(rx_cmd_buff_t* rx_cmd_buff_o) {
   }                                                  //
 }
 
-void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o, int use_uart) {
-  if(                                                  // if
-   rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE && // rx_cmd is valid AND
-   tx_cmd_buff_o->empty                                // tx_cmd is empty
-  ) {                                                  //
-    write_reply(rx_cmd_buff_o, tx_cmd_buff_o);         // Execute cmd and reply
-
-    if (use_uart) {
-      uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);        // Pop 1st TX buffer byte
-      uart_send(UART0,b);                                // Generate TXDRDY event
-      uart_start_tx(UART0);                              // Start TX session
-    }
-  }                                                    //
-}
-
 void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o) {
+  static bool tx_ongoing = false;
+  // First byte must be sent before TX is enabled 
+  if (!tx_cmd_buff_o->empty && !tx_ongoing) {
+    uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);      // Pop byte from TX buffer
+    uart_send(UART0,b);                              // Send byte to TX pin
+    uart_start_tx(UART0);
+    tx_ongoing = true;
+  }
   while(                                             // while
    UART_EVENT_TXDRDY(UART0) &&                       //  UART0 TX empty AND
    !(tx_cmd_buff_o->empty)                           //  TX buffer not empty
@@ -185,6 +178,7 @@ void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o) {
   ) {                                                //
     UART_EVENT_TXDRDY(UART0) = 0;                    // Reset TXDRDY event
     uart_stop_tx(UART0);                             // Stop TX session
+    tx_ongoing = false;
     // gpio_toggle(GPIO0, GPIO13);                      //  Toggle LED
     // gpio_toggle(GPIO0, GPIO12);                      //  Toggle LED
   }                                                  //
@@ -210,24 +204,8 @@ void radio_disable_txrx(void);
 void radio_start(void) {
   PERIPH_TRIGGER_TASK(RADIO_TASK_START); 
 }
-
 void radio_disable_txrx(void) {
   PERIPH_TRIGGER_TASK(RADIO_TASK_DISABLE); 
-}
-
-void forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o, int use_uart) {
-  if(
-   rx_cmd_buff_o->state==RX_CMD_BUFF_STATE_COMPLETE &&
-   tx_cmd_buff_o->empty
-  ) {
-    write_forward(rx_cmd_buff_o, tx_cmd_buff_o);
-
-    if (use_uart) {
-      uint8_t b = pop_tx_cmd_buff(tx_cmd_buff_o);        // Pop 1st TX buffer byte
-      uart_send(UART0,b);                                // Generate TXDRDY event
-      uart_start_tx(UART0);                              // Start TX session
-    }
-  }
 }
 
 void radio_transceive(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o) {
@@ -304,46 +282,15 @@ void radio_transceive(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o
   }
 }
 
-// #define GROUND
-#define HWID 4783872
-
-uint16_t cmd_hwid(rx_cmd_buff_t* rx_cmd_buff_o) {
-  return (uint16_t)rx_cmd_buff_o->data[HWID_MSB_INDEX] << 8 + rx_cmd_buff_o->data[HWID_LSB_INDEX];
+int get_dst_buff_index(uint8_t route_nibble, bool outbound) {
+  (void) route_nibble;
+  return outbound ? INDEX_RADIO : INDEX_UART;
 }
 
+uint16_t get_stack_hwid(void) {
+  return BOARD_HWID;
+}
 
-void route(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* uart_tx_cmd_buff_o, tx_cmd_buff_t* radio_tx_cmd_buff_o) {
-  // Command route is src:dst, both are nibbles
-  int src = (rx_cmd_buff_o->data[ROUTE_INDEX] >> 4) & 0x0f;
-  int dst = (rx_cmd_buff_o->data[ROUTE_INDEX] >> 0) & 0x0f;
-
-  #ifdef GROUND
-    if (dst == GND) {
-      forward(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
-    } else {
-      forward(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
-    }
-  #else
-    // Drop packets with a different HWID
-    if (HWID != cmd_hwid(rx_cmd_buff_o)) {
-      clear_rx_cmd_buff(rx_cmd_buff_o);
-      return;
-    }
-
-    switch (dst) {
-      case GND:
-        forward(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
-        break;
-      case COM:
-        if (src == GND) {
-          reply(rx_cmd_buff_o, radio_tx_cmd_buff_o, 0);
-        } else {
-          reply(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
-        }
-        break;
-      default:
-        forward(rx_cmd_buff_o, uart_tx_cmd_buff_o, 1);
-        break;
-    }
-  #endif
+uint8_t get_route_id(void) {
+  return COM;
 }

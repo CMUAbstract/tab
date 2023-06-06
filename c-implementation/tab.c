@@ -22,6 +22,10 @@ extern int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff);
 extern int handle_bootloader_jump(void);
 extern int bootloader_active(void);
 
+extern int get_dst_buff_index(uint8_t route_nibble, bool outbound);
+extern uint16_t get_stack_hwid(void);
+extern uint8_t get_route_id(void);
+
 // Helper functions
 
 //// Clears rx_cmd_buff data and resets state and indices
@@ -318,4 +322,85 @@ uint8_t pop_tx_cmd_buff(tx_cmd_buff_t* tx_cmd_buff_o) {
     clear_tx_cmd_buff(tx_cmd_buff_o);
   }
   return b;
+}
+
+uint16_t get_cmd_hwid(const rx_cmd_buff_t* const rx_cmd_buff_i) {
+  return ((uint16_t)rx_cmd_buff_i->data[HWID_MSB_INDEX] << 8) + rx_cmd_buff_i->data[HWID_LSB_INDEX];
+}
+
+uint16_t get_cmd_msg_id(const rx_cmd_buff_t* const rx_cmd_buff_i) {
+  return ((uint16_t)rx_cmd_buff_i->data[MSG_ID_MSB_INDEX] << 8) + rx_cmd_buff_i->data[MSG_ID_LSB_INDEX];
+}
+
+// Command route_index is src:dst, both are nibbles
+uint8_t get_cmd_src(const rx_cmd_buff_t* const rx_cmd_buff_i) {
+  return (rx_cmd_buff_i->data[ROUTE_INDEX] >> 4) & 0x0f;
+}
+
+uint8_t get_cmd_dst(const rx_cmd_buff_t* const rx_cmd_buff_i) {
+  return (rx_cmd_buff_i->data[ROUTE_INDEX] >> 0) & 0x0f;
+}
+
+void add_live(liveness_accountant_t *accountant, uint16_t msg_id) {
+  for (size_t i = 0; i < accountant->size; i++) {
+    if (accountant->data[i] == 0) {
+      accountant->data[i] = msg_id;
+      return;
+    }
+  }
+  // TODO: reaching here should raise an error
+}
+
+void remove_live(liveness_accountant_t *accountant, uint16_t msg_id) {
+  for (size_t i = 0; i < accountant->size; i++) {
+    if (accountant->data[i] == msg_id) {
+      accountant->data[i] = 0;
+    }
+  }
+}
+
+bool is_live(liveness_accountant_t *accountant, uint16_t msg_id) {
+  for (size_t i = 0; i < accountant->size; i++) {
+    if (accountant->data[i] == msg_id) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void route(rx_cmd_buff_t* rx_cmd_buff_o, liveness_accountant_t* accountant, size_t len_tx_cmd_buffs_o, tx_cmd_buff_t** tx_cmd_buffs_o) {
+   // TODO: use to check result from get_dst_buff_index to prevent out of bounds write
+  (void) len_tx_cmd_buffs_o;
+
+  uint16_t msg_id = get_cmd_msg_id(rx_cmd_buff_o);
+  bool live = is_live(accountant, msg_id);
+  bool hwid_match = get_stack_hwid() == get_cmd_hwid(rx_cmd_buff_o);
+
+  uint8_t src = get_cmd_src(rx_cmd_buff_o);
+  uint8_t dst = get_cmd_dst(rx_cmd_buff_o);
+
+  // clear commands that are not replies and do not match the hwid if they came from outside the board
+  if (!live && !hwid_match && rx_cmd_buff_o->handles_offboard) {
+    clear_rx_cmd_buff(rx_cmd_buff_o);
+    return;
+  }
+
+  // sort buffer between inbound/outbound and command/reply
+  if (!live && hwid_match) { // inbound command
+    add_live(accountant, msg_id);
+    if (dst == get_route_id()) { // correct board, generate reply
+      write_reply(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(rx_cmd_buff_o->reply_nibble, rx_cmd_buff_o->handles_offboard)]);
+    } else { // forward
+      write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(dst, false)]);
+    }
+  } else if (!live && !hwid_match) { // outbound command
+    add_live(accountant, msg_id);
+    write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(dst, true)]);
+  } else if (live && !hwid_match) { // outbound reply
+    remove_live(accountant, msg_id);
+    write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(src, true)]);
+  } else { // inbound reply
+    remove_live(accountant, msg_id);
+    write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(src, false)]);
+  }
 }

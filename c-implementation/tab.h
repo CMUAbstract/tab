@@ -12,12 +12,14 @@
 // Standard library
 #include <stddef.h> // size_t
 #include <stdint.h> // uint8_t, uint32_t
+#include <stdbool.h> // bool
 
 // Macros
 
 //// General
 #define CMD_MAX_LEN  ((size_t)258)
 #define PLD_MAX_LEN  ((size_t)249)
+#define MAX_LIVE  ((size_t)255)
 #define START_BYTE_0 ((uint8_t)0x22)
 #define START_BYTE_1 ((uint8_t)0x69)
 
@@ -89,6 +91,8 @@ typedef struct rx_cmd_buff {
   size_t              start_index;       // Index of next byte to be buffered
   size_t              end_index;         // data[i] valid for i<end_index
   const size_t        size;              // rx_cmd_buff_t b={.size=CMD_MAX_LEN};
+  bool handles_offboard;                 // If buffer receives TAB commands from off board, used for filtering
+  uint8_t reply_nibble;                  // Nibble of board to send reply to, can be empty if handles_offboard is true
   uint8_t             data[CMD_MAX_LEN]; // Command bytes
 } rx_cmd_buff_t;
 
@@ -101,6 +105,11 @@ typedef struct tx_cmd_buff {
   uint8_t      data[CMD_MAX_LEN]; // Command bytes
 } tx_cmd_buff_t;
 
+typedef struct liveness_accountant {
+  const size_t size;              // tx_cmd_buff_t b={.size=NUM_LIVE};
+  uint16_t data[MAX_LIVE];
+} liveness_accountant_t;
+
 // Helper functions
 
 //// Clears rx_cmd_buff data and resets state and indices
@@ -108,6 +117,20 @@ void clear_rx_cmd_buff(rx_cmd_buff_t* rx_cmd_buff_o);
 
 //// Clears tx_cmd_buff data and resets state and indices
 void clear_tx_cmd_buff(tx_cmd_buff_t* tx_cmd_buff_o);
+
+//// Marks a command as live in the accountant struct
+void add_live(liveness_accountant_t *accountant, uint16_t msg_id);
+
+//// Removes a command from the accountant struct
+void remove_live(liveness_accountant_t *accountant, uint16_t msg_id);
+
+//// Checks if a command is registered as live in the accountant struct
+bool is_live(liveness_accountant_t *accountant, uint16_t msg_id);
+
+uint16_t get_cmd_hwid(const rx_cmd_buff_t* const rx_cmd_buff_i);
+uint16_t get_cmd_msg_id(const rx_cmd_buff_t* const rx_cmd_buff_i);
+uint8_t get_cmd_src(const rx_cmd_buff_t* const rx_cmd_buff_i);
+uint8_t get_cmd_dst(const rx_cmd_buff_t* const rx_cmd_buff_i);
 
 // Protocol functions
 
@@ -123,7 +146,7 @@ void write_forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
 //// Attempts to pop byte from beginning of tx_cmd_buff
 uint8_t pop_tx_cmd_buff(tx_cmd_buff_t* tx_cmd_buff_o);
 
-
-uint16_t get_cmd_hwid(const rx_cmd_buff_t* const rx_cmd_buff_o);
+//// Routes rx_cmd_buff_o into the appropriate tx_cmd_buff_t using the get_dst_buff_index helper
+void route(rx_cmd_buff_t* rx_cmd_buff_o, liveness_accountant_t* accountant, size_t len_tx_cmd_buffs_o, tx_cmd_buff_t** tx_cmd_buffs_o);
 
 #endif

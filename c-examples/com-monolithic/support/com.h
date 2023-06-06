@@ -40,6 +40,13 @@
 #define CTS GPIO23
 #define RTS GPIO24
 
+//// Indexes in tx_cmd_buff_t array
+#define INDEX_UART 0
+#define INDEX_RADIO 1
+
+//// TODO: make build option
+#define BOARD_HWID 74
+
 // Functions required by TAB
 
 int handle_common_data(common_data_t common_data_buff_i);
@@ -48,6 +55,10 @@ int handle_bootloader_write_page(rx_cmd_buff_t* rx_cmd_buff);
 int handle_bootloader_write_page_addr32(rx_cmd_buff_t* rx_cmd_buff);
 int handle_bootloader_jump(void);
 int bootloader_active(void);
+
+int get_dst_buff_index(uint8_t route_nibble, bool outbound);
+uint16_t get_stack_hwid(void);
+uint8_t get_route_id(void);
 
 // Board initialization functions
 
@@ -59,10 +70,7 @@ void init_radio(void);
 // Feature functions
 
 void rx_uart0(rx_cmd_buff_t* rx_cmd_buff_o);
-void reply(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o, int use_uart);
 void tx_uart0(tx_cmd_buff_t* tx_cmd_buff_o);
-void forward(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o, int use_uart);
 void radio_transceive(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* tx_cmd_buff_o);
-void route(rx_cmd_buff_t* rx_cmd_buff_o, tx_cmd_buff_t* uart_tx_cmd_buff_o, tx_cmd_buff_t* radio_tx_cmd_buff_o);
 
 #endif
