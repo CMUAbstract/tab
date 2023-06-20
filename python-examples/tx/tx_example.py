@@ -51,7 +51,7 @@ except:
 
 # Set up test support variables
 HWID = 0x1234
-msgid = 0x0000
+msgid = 0x0100
 rx_cmd_buff = RxCmdBuff()
 
 # 1. Test Common Ack

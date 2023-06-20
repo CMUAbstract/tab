@@ -387,10 +387,10 @@ void route(rx_cmd_buff_t* rx_cmd_buff_o, liveness_accountant_t* accountant, size
 
   // sort buffer between inbound/outbound and command/reply
   if (!live && hwid_match) { // inbound command
-    add_live(accountant, msg_id);
     if (dst == get_route_id()) { // correct board, generate reply
       write_reply(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(rx_cmd_buff_o->reply_nibble, rx_cmd_buff_o->handles_offboard)]);
     } else { // forward
+      add_live(accountant, msg_id);
       write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(dst, false)]);
     }
   } else if (!live && !hwid_match) { // outbound command

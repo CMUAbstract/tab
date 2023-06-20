@@ -6,8 +6,8 @@
 //
 // See the top-level LICENSE file for the license.
 
-#ifndef COM_H
-#define COM_H
+#ifndef GND_H
+#define GND_H
 
 // libopencm3 library
 #include <libopencm3/nrf/common/memorymap.h> // NVMC_BASE
