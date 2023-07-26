@@ -35,6 +35,9 @@ int main(void) {
   clear_tx_cmd_buff(&radio_tx_cmd_buff);
 
   liveness_accountant_t liveness_accountant = {.size=MAX_LIVE};
+  for (size_t i = 0; i < MAX_LIVE; i++) {
+    liveness_accountant.data[i] = 0;
+  }
 
   #define LEN_TX_BUFFS 2
   tx_cmd_buff_t* tx_cmd_buffs_o[LEN_TX_BUFFS];

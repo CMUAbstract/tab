@@ -393,12 +393,12 @@ void route(rx_cmd_buff_t* rx_cmd_buff_o, liveness_accountant_t* accountant, size
       add_live(accountant, msg_id);
       write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(dst, false)]);
     }
+  } else if (live && hwid_match) { // outbound reply
+    remove_live(accountant, msg_id);
+    write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(src, true)]);
   } else if (!live && !hwid_match) { // outbound command
     add_live(accountant, msg_id);
     write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(dst, true)]);
-  } else if (live && !hwid_match) { // outbound reply
-    remove_live(accountant, msg_id);
-    write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(src, true)]);
   } else { // inbound reply
     remove_live(accountant, msg_id);
     write_forward(rx_cmd_buff_o, tx_cmd_buffs_o[get_dst_buff_index(src, false)]);
